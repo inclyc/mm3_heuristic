@@ -1,4 +1,4 @@
-#include "list.hpp"
+#include "DynamicGraph/List.hpp"
 namespace DynamicGraph {
 void List::init(int n) {
   head = new int[n + 1]();

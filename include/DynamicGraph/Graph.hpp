@@ -3,7 +3,7 @@
 // 利用LCT维护生成树
 #ifndef DYNAMIC_GRAPH_HPP
 #define DYNAMIC_GRAPH_HPP
-#include "lct.hpp"
+#include "LinkCutTree.hpp"
 #include <unordered_map>
 namespace DynamicGraph {
 typedef long long ll;
@@ -14,7 +14,7 @@ private:
   int M;
   int blocks;
   ll mapNode(int x, int y);
-  LCT lct[20];
+  LinkCutTree lct[20];
   std::unordered_map<ll, int> LV;
   void insertAsTree(int lv, int u, int v);
   void insertAsGraph(int lv, int u, int v);

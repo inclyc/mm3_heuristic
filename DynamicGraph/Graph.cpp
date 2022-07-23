@@ -1,5 +1,5 @@
-#include "dynamic_graph.hpp"
-#include "lct.hpp"
+#include "DynamicGraph/Graph.hpp"
+#include "DynamicGraph/LinkCutTree.hpp"
 #include <algorithm>
 #include <cstdio>
 #include <vector>

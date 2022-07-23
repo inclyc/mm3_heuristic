@@ -1,8 +1,10 @@
 includes("test")
+set_languages("cxx17")
+add_cxflags("-Weverything")
 
 add_rules("mode.debug", "mode.release")
-target("dynamic_graph")
+target("DynamicGraph")
     set_kind("shared")
     add_includedirs("include")
-    add_files("dynamic_graph/*.cpp")
-    add_cxflags("-Weverything")
+    add_files("DynamicGraph/*.cpp")
+    

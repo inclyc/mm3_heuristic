@@ -3,16 +3,16 @@
 // Link-Cut-Trees by Robert Endre Tarjan
 // 为其他结构提供动态树支持。
 // 在这个项目中，LCT被用于： 维护动态图中的生成树
-#ifndef LCT_HPP
-#define LCT_HPP
+#ifndef LINK_CUT_TREE_HPP
+#define LINK_CUT_TREE_HPP
 
-#include "list.hpp"
+#include "List.hpp"
 #include "unordered_set"
 #include <algorithm>
 
 #define LCT_MAXN 100000 + 10
 namespace DynamicGraph {
-struct LCT {
+struct LinkCutTree {
   std::unordered_set<int> G[LCT_MAXN][2];
   int fa[LCT_MAXN];
   int ch[LCT_MAXN][2];
@@ -50,4 +50,4 @@ struct LCT {
 };
 } // namespace DynamicGraph
 
-#endif // LCT_HPP
+#endif // LINK_CUT_TREE_HPP

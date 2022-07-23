@@ -1,4 +1,4 @@
-#include "lct.hpp"
+#include "DynamicGraph/LinkCutTree.hpp"
 #include <unordered_map>
 #include <unordered_set>
 
@@ -7,7 +7,7 @@ namespace DynamicGraph {
 #define l(u) ch[u][0]
 #define r(u) ch[u][1]
 
-void LCT::init(int n) {
+void LinkCutTree::init(int n) {
   for (int i = 0; i < 2; ++i) {
     chv[i].init(n);
     for (int u = 1; u <= n; ++u)
@@ -23,12 +23,12 @@ void LCT::init(int n) {
   siz[0] = 0;
 }
 
-void LCT::free() {
+void LinkCutTree::free() {
   chv[0].free();
   chv[1].free();
 }
 
-void LCT::linkv(int u, int v) {
+void LinkCutTree::linkv(int u, int v) {
   if (!u || !v)
     return;
   sizv[u] += siz[v];
@@ -36,7 +36,7 @@ void LCT::linkv(int u, int v) {
     if (tag[v][i])
       chv[i].link(u, v);
 }
-void LCT::cutv(int u, int v) {
+void LinkCutTree::cutv(int u, int v) {
   if (!u || !v)
     return;
   sizv[u] -= siz[v];
@@ -44,12 +44,12 @@ void LCT::cutv(int u, int v) {
     if (tag[v][i])
       chv[i].cut(u, v);
 }
-void LCT::rev(int u) {
+void LinkCutTree::rev(int u) {
   flp[u] ^= 1;
   std::swap(l(u), r(u));
 }
 
-void LCT::pu(int u) {
+void LinkCutTree::pu(int u) {
   if (!u)
     return;
   for (int i = 0; i < 2; ++i)
@@ -58,16 +58,16 @@ void LCT::pu(int u) {
   siz[u] = siz[l(u)] + siz[r(u)] + 1 + sizv[u];
 }
 
-void LCT::pd(int u) {
+void LinkCutTree::pd(int u) {
   if (flp[u])
     rev(l(u)), rev(r(u)), flp[u] = 0;
 }
 
-int LCT::sf(int u) { return u == r(fa[u]); }
+int LinkCutTree::sf(int u) { return u == r(fa[u]); }
 
-bool LCT::isrt(int u) { return u != l(fa[u]) && u != r(fa[u]); }
+bool LinkCutTree::isrt(int u) { return u != l(fa[u]) && u != r(fa[u]); }
 
-void LCT::rot(int u) {
+void LinkCutTree::rot(int u) {
   int v = fa[u], f = sf(u);
   bool flag = isrt(v);
   if (!flag)
@@ -80,7 +80,7 @@ void LCT::rot(int u) {
     pu(u), linkv(fa[u], u);
 }
 
-void LCT::splay(int u) {
+void LinkCutTree::splay(int u) {
   sta[tp = 0] = u;
   for (int v = u; !isrt(v); v = fa[v])
     sta[++tp] = fa[v];
@@ -91,23 +91,23 @@ void LCT::splay(int u) {
       rot(fa[u]);
 }
 
-void LCT::access(int u) {
+void LinkCutTree::access(int u) {
   int w = u;
   for (int v = 0; u; u = fa[v = u])
     splay(u), linkv(u, r(u)), cutv(u, v), r(u) = v, pu(u);
   splay(w);
 }
-void LCT::makert(int u) {
+void LinkCutTree::makert(int u) {
   access(u);
   rev(u);
 }
 
-void LCT::join(int u, int v) {
+void LinkCutTree::join(int u, int v) {
   makert(u);
   access(v);
 }
 
-int LCT::findrt(int u) {
+int LinkCutTree::findrt(int u) {
   access(u);
   for (; l(u); pd(u), u = l(u))
     ;
@@ -115,21 +115,21 @@ int LCT::findrt(int u) {
   return u;
 }
 
-void LCT::link(int u, int v) {
+void LinkCutTree::link(int u, int v) {
   makert(u);
   if (findrt(v) == u)
     return;
   fa[u] = v, linkv(v, u), pu(v), access(v);
 }
 
-void LCT::cut(int u, int v) {
+void LinkCutTree::cut(int u, int v) {
   join(u, v);
   if (l(v) != u || r(u))
     return;
   fa[u] = l(v) = 0, pu(v);
 }
 
-int LCT::get(int u, int f) {
+int LinkCutTree::get(int u, int f) {
   access(u);
   if (!tag[u][f])
     return 0;
@@ -143,8 +143,8 @@ int LCT::get(int u, int f) {
   }
   return u;
 }
-bool LCT::isconnected(int u, int v) { return findrt(u) == findrt(v); }
-void LCT::ins(int f, int u, int v) {
+bool LinkCutTree::isconnected(int u, int v) { return findrt(u) == findrt(v); }
+void LinkCutTree::ins(int f, int u, int v) {
   if (G[u][f].size() == 0)
     access(u);
   G[u][f].insert(v), pu(u);
@@ -152,7 +152,7 @@ void LCT::ins(int f, int u, int v) {
     access(v);
   G[v][f].insert(u), pu(v);
 }
-void LCT::del(int f, int u, int v) {
+void LinkCutTree::del(int f, int u, int v) {
   if (G[u][f].size() == 1)
     access(u);
   G[u][f].erase(v), pu(u);
