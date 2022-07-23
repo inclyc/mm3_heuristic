@@ -1,5 +1,5 @@
-#include "DynamicGraph/Graph.hpp"
-#include "DynamicGraph/LinkCutTree.hpp"
+#include "DynamicGraph/Graph.h"
+#include "DynamicGraph/LinkCutTree.h"
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>

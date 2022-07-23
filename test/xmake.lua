@@ -1,3 +1,5 @@
+includes("DSU")
+
 add_rules("mode.debug", "mode.release")
 target("test")
     set_kind("binary")

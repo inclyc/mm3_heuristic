@@ -1,4 +1,4 @@
-#include "DynamicGraph/List.hpp"
+#include "DynamicGraph/List.h"
 #include <cstddef>
 namespace DynamicGraph {
 void List::init(std::size_t n) {

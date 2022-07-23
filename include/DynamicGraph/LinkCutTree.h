@@ -6,7 +6,7 @@
 #ifndef LINK_CUT_TREE_HPP
 #define LINK_CUT_TREE_HPP
 
-#include "List.hpp"
+#include "List.h"
 #include "unordered_set"
 #include <algorithm>
 #include <cstddef>

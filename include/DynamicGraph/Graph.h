@@ -3,7 +3,7 @@
 // 利用LCT维护生成树
 #ifndef DYNAMIC_GRAPH_HPP
 #define DYNAMIC_GRAPH_HPP
-#include "LinkCutTree.hpp"
+#include "LinkCutTree.h"
 #include <cstddef>
 #include <unordered_map>
 namespace DynamicGraph {

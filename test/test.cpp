@@ -1,6 +1,6 @@
 // Test dynamic graph
 
-#include "DynamicGraph/Graph.hpp"
+#include "DynamicGraph/Graph.h"
 #include <cstdio>
 #include <memory>
 #include <vector>
