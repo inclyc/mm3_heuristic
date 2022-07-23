@@ -4,7 +4,7 @@
 
 namespace DSU {
 DSU::DSU(int n) {
-  fa = std::make_unique<int[]>(static_cast<size_t>(n));
+  fa = std::make_unique<int[]>(static_cast<size_t>(n + 1));
   for (int i = 0; i <= n; i++) {
     fa[static_cast<size_t>(i)] = i;
   }
