@@ -1,6 +1,8 @@
 includes("test")
-set_languages("cxx17")
+set_languages("cxx20")
 add_cxflags("-Weverything")
+add_cxxflags("-Wno-c++98-compat")
+add_cxxflags("-Wno-c++98-compat-pedantic")
 
 add_rules("mode.debug", "mode.release")
 target("DynamicGraph")

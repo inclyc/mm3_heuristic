@@ -7,17 +7,17 @@ namespace DynamicGraph {
 #define l(u) ch[u][0]
 #define r(u) ch[u][1]
 
-void LinkCutTree::init(int n) {
-  for (int i = 0; i < 2; ++i) {
+void LinkCutTree::init(std::size_t n) {
+  for (std::size_t i = 0; i < 2; ++i) {
     chv[i].init(n);
-    for (int u = 1; u <= n; ++u)
+    for (std::size_t u = 1; u <= n; ++u)
       G[u][i].clear();
   }
   tp = 0;
-  for (int u = 0; u <= n; ++u) {
+  for (std::size_t u = 0; u <= n; ++u) {
     sizv[u] = 0;
     sta[u] = 0;
-    fa[u] = l(u) = r(u) = tag[u][0] = tag[u][1] = flp[u] = sizv[u] = 0,
+    fa[u] = l(u) = r(u) = tag[u][0] = tag[u][1] = flp[u] = sizv[u] = 0;
     siz[u] = 1;
   }
   siz[0] = 0;
@@ -59,8 +59,11 @@ void LinkCutTree::pu(int u) {
 }
 
 void LinkCutTree::pd(int u) {
-  if (flp[u])
-    rev(l(u)), rev(r(u)), flp[u] = 0;
+  if (flp[u]) {
+    rev(l(u));
+    rev(r(u));
+    flp[u] = 0;
+  }
 }
 
 int LinkCutTree::sf(int u) { return u == r(fa[u]); }
@@ -74,10 +77,16 @@ void LinkCutTree::rot(int u) {
     ch[fa[v]][sf(v)] = u;
   else if (fa[v])
     cutv(fa[v], v);
-  ch[v][f] = ch[u][f ^ 1], fa[ch[v][f]] = v;
-  fa[u] = fa[v], ch[u][f ^ 1] = v, fa[v] = u, pu(v);
-  if (flag)
-    pu(u), linkv(fa[u], u);
+  ch[v][f] = ch[u][f ^ 1];
+  fa[ch[v][f]] = v;
+  fa[u] = fa[v];
+  ch[u][f ^ 1] = v;
+  fa[v] = u;
+  pu(v);
+  if (flag) {
+    pu(u);
+    linkv(fa[u], u);
+  }
 }
 
 void LinkCutTree::splay(int u) {
@@ -93,8 +102,14 @@ void LinkCutTree::splay(int u) {
 
 void LinkCutTree::access(int u) {
   int w = u;
-  for (int v = 0; u; u = fa[v = u])
-    splay(u), linkv(u, r(u)), cutv(u, v), r(u) = v, pu(u);
+  for (int v = 0; u; u = fa[v = u]) {
+    splay(u);
+    linkv(u, r(u));
+    cutv(u, v);
+    r(u) = v;
+    pu(u);
+  }
+
   splay(w);
 }
 void LinkCutTree::makert(int u) {
@@ -119,14 +134,18 @@ void LinkCutTree::link(int u, int v) {
   makert(u);
   if (findrt(v) == u)
     return;
-  fa[u] = v, linkv(v, u), pu(v), access(v);
+  fa[u] = v;
+  linkv(v, u);
+  pu(v);
+  access(v);
 }
 
 void LinkCutTree::cut(int u, int v) {
   join(u, v);
   if (l(v) != u || r(u))
     return;
-  fa[u] = l(v) = 0, pu(v);
+  fa[u] = l(v) = 0;
+  pu(v);
 }
 
 int LinkCutTree::get(int u, int f) {
@@ -147,17 +166,21 @@ bool LinkCutTree::isconnected(int u, int v) { return findrt(u) == findrt(v); }
 void LinkCutTree::ins(int f, int u, int v) {
   if (G[u][f].size() == 0)
     access(u);
-  G[u][f].insert(v), pu(u);
+  G[u][f].insert(v);
+  pu(u);
   if (G[v][f].size() == 0)
     access(v);
-  G[v][f].insert(u), pu(v);
+  G[v][f].insert(u);
+  pu(v);
 }
 void LinkCutTree::del(int f, int u, int v) {
   if (G[u][f].size() == 1)
     access(u);
-  G[u][f].erase(v), pu(u);
+  G[u][f].erase(v);
+  pu(u);
   if (G[v][f].size() == 1)
     access(v);
-  G[v][f].erase(u), pu(v);
+  G[v][f].erase(u);
+  pu(v);
 }
 } // namespace DynamicGraph

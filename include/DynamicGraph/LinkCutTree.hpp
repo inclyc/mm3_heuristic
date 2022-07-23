@@ -9,6 +9,7 @@
 #include "List.hpp"
 #include "unordered_set"
 #include <algorithm>
+#include <cstddef>
 
 #define LCT_MAXN 100000 + 10
 namespace DynamicGraph {
@@ -25,7 +26,7 @@ struct LinkCutTree {
 
   List chv[2];
 
-  void init(int n);
+  void init(std::size_t);
   void free();
 
   void linkv(int, int);

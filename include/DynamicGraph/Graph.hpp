@@ -4,6 +4,7 @@
 #ifndef DYNAMIC_GRAPH_HPP
 #define DYNAMIC_GRAPH_HPP
 #include "LinkCutTree.hpp"
+#include <cstddef>
 #include <unordered_map>
 namespace DynamicGraph {
 typedef long long ll;

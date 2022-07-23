@@ -1,10 +1,11 @@
 #include "DynamicGraph/List.hpp"
+#include <cstddef>
 namespace DynamicGraph {
-void List::init(int n) {
+void List::init(std::size_t n) {
   head = new int[n + 1]();
   pre = new int[n + 1]();
   next = new int[n + 1]();
-  for (int i = 0; i <= n; ++i) {
+  for (unsigned int i = 0; i <= n; ++i) {
     head[i] = pre[i] = next[i] = 0;
   }
 }

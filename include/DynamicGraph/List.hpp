@@ -5,7 +5,7 @@ struct List {
   int *head;
   int *pre;
   int *next;
-  void init(int);
+  void init(unsigned long);
   void free();
   void link(int, int);
   void cut(int, int);
