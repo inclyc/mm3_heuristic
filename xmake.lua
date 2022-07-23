@@ -10,3 +10,9 @@ target("DynamicGraph")
     add_includedirs("include")
     add_files("DynamicGraph/*.cpp")
     
+
+add_rules("mode.debug", "mode.release")
+target("DSU")
+    set_kind("shared")
+    add_includedirs("include")
+    add_files("DSU/*.cpp")
