@@ -1,8 +1,8 @@
 // Author: lyc
 // 2021/10/31
 // 利用LCT维护生成树
-#ifndef DYNAMIC_GRAPH_HPP
-#define DYNAMIC_GRAPH_HPP
+#ifndef DYNAMIC_GRAPH_H
+#define DYNAMIC_GRAPH_H
 #include "LinkCutTree.h"
 #include <cstddef>
 #include <unordered_map>
@@ -34,4 +34,4 @@ public:
 };
 } // namespace DynamicGraph
 
-#endif // DYNAMIC_GRAPH_HPP
+#endif // DYNAMIC_GRAPH_H

@@ -1,5 +1,5 @@
-#ifndef LIST_HPP
-#define LIST_HPP
+#ifndef LIST_H
+#define LIST_H
 namespace DynamicGraph {
 struct List {
   int *head;
@@ -14,4 +14,4 @@ struct List {
 };
 } // namespace DynamicGraph
 
-#endif // LIST_HPP
+#endif // LIST_H
