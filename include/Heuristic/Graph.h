@@ -21,6 +21,10 @@ protected:
 public:
   Graph(int v, int e);
   void addEdge(int u, int v, float w);
+  void addBiEdge(int u, int v, float w) {
+    addEdge(u, v, w);
+    addEdge(v, u, w);
+  }
 };
 
 } // namespace Heuristic
