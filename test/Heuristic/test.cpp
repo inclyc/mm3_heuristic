@@ -1,5 +1,6 @@
 #include "Heuristic/ColorGraph.h"
 #include "Heuristic/Graph.h"
+#include "Random/Random.h"
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -33,8 +34,8 @@ static void random_tree_test() {
   const std::string test_name("random_tree_test");
   std::cout << test_name << " ...\n";
 
-  for (int i = 0; i < 1000; i++) {
-    int n = rand() % 1000 + 20;
+  for (int i = 0; i < 10; i++) {
+    int n = rand_range(1000, 2000) + 20;
     auto g = Heuristic::random_bigraph(n, n - 1);
     auto a = std::set<int>();
     auto b = std::set<int>();

@@ -1,4 +1,5 @@
 #include "Heuristic/Graph.h"
+#include "Random/Random.h"
 #include <cassert>
 #include <cstdlib>
 #include <memory>
@@ -16,24 +17,6 @@ Graph::Graph(int v, int e) {
   head = std::make_unique<int[]>(static_cast<size_t>(v + 1));
   edgeNum = 0;
   vertexNum = v;
-}
-
-/**
- * @brief helper function for generates integer in [l, r)
- *
- * @param l lower bound (inclusive)
- * @param r upper bound (exclusive)
- * @return the result
- */
-static int rand_range(int l, int r) { return rand() % (r - l) + l; }
-
-/**
- * @brief random number between [0, 1)
- *
- * @return float
- */
-static float rand_float() {
-  return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge) {
