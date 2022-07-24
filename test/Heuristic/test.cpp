@@ -1,9 +1,13 @@
 #include "Heuristic/ColorGraph.h"
+#include <cassert>
+#include <iostream>
 #include <memory>
 #include <set>
-
+#include <string>
 // 是否能正常退出
 static void exit_test() {
+  const std::string test_name("exit_test");
+  std::cout << test_name << " ...\n";
   auto a = std::make_unique<std::set<int>>();
   auto b = std::make_unique<std::set<int>>();
   a->insert(1);
@@ -17,6 +21,10 @@ static void exit_test() {
   p->addBiEdge(3, 4, 4);
 
   p->bfs();
+
+  assert(p->connection());
+
+  std::cout << test_name << " passed.\n";
 }
 
 int main() { exit_test(); }
