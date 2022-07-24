@@ -24,7 +24,9 @@ public:
   bool connection() const { return checkSetConn(*A) && checkSetConn(*B); }
 
   // 所有的节点都已经染色完成
-  bool allNodesColored() const;
+  bool allNodesColored() const {
+    return static_cast<size_t>(getVertexNum()) == A->size() + B->size();
+  }
 
   // 所有的检查
   bool validate() const { return connection() && allNodesColored(); }

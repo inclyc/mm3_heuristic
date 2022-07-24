@@ -12,7 +12,7 @@ struct Edge {
 
 class Graph {
 private:
-  size_t ecnt;
+  int vertexNum, edgeNum;
 
 protected:
   std::unique_ptr<Edge[]> edges;
@@ -20,6 +20,7 @@ protected:
 
 public:
   Graph(int v, int e);
+  int getVertexNum() const { return vertexNum; }
   void addEdge(int u, int v, float w);
   void addBiEdge(int u, int v, float w) {
     addEdge(u, v, w);
