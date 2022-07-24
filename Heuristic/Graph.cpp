@@ -37,7 +37,7 @@ static float rand_float() {
 }
 
 std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge) {
-  auto ret = std::make_unique<Graph>(n_vertex, n_edge);
+  auto ret = std::make_unique<Graph>(n_vertex, n_edge * 2);
 
   assert(n_edge + 1 >= n_vertex);
 

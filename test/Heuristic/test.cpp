@@ -9,10 +9,10 @@
 static void exit_test() {
   const std::string test_name("exit_test");
   std::cout << test_name << " ...\n";
-  auto a = std::make_unique<std::set<int>>();
-  auto b = std::make_unique<std::set<int>>();
-  a->insert(1);
-  b->insert(4);
+  auto a = std::set<int>();
+  auto b = std::set<int>();
+  a.insert(1);
+  b.insert(4);
 
   auto p = std::make_unique<Heuristic::ColorGraph>(5, 10, std::move(a),
                                                    std::move(b));
@@ -28,7 +28,17 @@ static void exit_test() {
   std::cout << test_name << " passed.\n";
 }
 
-static void random_tree() { auto r = Heuristic::random_bigraph(10, 9); }
+static void random_tree() {
+  auto r = Heuristic::random_bigraph(10, 9);
+  auto a = std::set<int>();
+  auto b = std::set<int>();
+  a.insert(1);
+  b.insert(4);
+  auto pp = std::make_unique<Heuristic::ColorGraph>(std::move(*r), std::move(a),
+                                                    std::move(b));
+  pp->bfs();
+  pp->connection();
+}
 
 int main() {
   exit_test();
