@@ -28,6 +28,16 @@ public:
   }
 };
 
+/**
+ * @brief generates a random bi-connected graph
+ *
+ * @param n_vertex number of vertex
+ * @param n_edge number of edge
+ * @note ensure e >= v - 1
+ * @return std::unique_ptr<Graph>
+ */
+std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge);
+
 } // namespace Heuristic
 
 #endif

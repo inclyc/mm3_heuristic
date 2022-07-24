@@ -1,4 +1,5 @@
 #include "Heuristic/ColorGraph.h"
+#include "Heuristic/Graph.h"
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -27,4 +28,9 @@ static void exit_test() {
   std::cout << test_name << " passed.\n";
 }
 
-int main() { exit_test(); }
+static void random_tree() { auto r = Heuristic::random_bigraph(10, 9); }
+
+int main() {
+  exit_test();
+  random_tree();
+}
