@@ -1,4 +1,5 @@
 // Test dynamic graph
+// https://loj.ac/s/1527121
 
 #include "DynamicGraph/Graph.h"
 #include <cstdio>
