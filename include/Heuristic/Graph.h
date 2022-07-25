@@ -11,12 +11,10 @@ struct Edge {
 };
 
 class Graph {
-private:
-  int vertexNum, edgeNum;
-
 protected:
   std::unique_ptr<Edge[]> edges;
   std::unique_ptr<int[]> head;
+  int vertexNum, edgeNum;
 
 public:
   Graph(int v, int e);

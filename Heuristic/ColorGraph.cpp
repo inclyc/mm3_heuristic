@@ -54,4 +54,16 @@ bool ColorGraph::checkSetConn(const std::set<int> &s) const {
   return visited == s;
 }
 
+float ColorGraph::cut() const {
+  float sum = 0;
+  for (int i = 1; i <= edgeNum; i++) {
+    auto &e = edges[static_cast<size_t>(i)];
+    int u = e.u, v = e.v;
+    if (A.contains(u) && B.contains(v)) {
+      sum += e.w;
+    }
+  }
+  return sum;
+}
+
 } // namespace Heuristic
