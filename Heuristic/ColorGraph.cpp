@@ -124,10 +124,9 @@ float ColorGraph::solveArticulation(int u) {
     if (!mp.contains(color[e.v])) {
       mp.insert({color[e.v], std::set<int>()});
       art_cut.insert({color[e.v], 0});
-    } else {
-      mp[color[e.v]].insert(e.v);
-      art_cut[color[e.v]] += e.w;
     }
+    mp[color[e.v]].insert(e.v);
+    art_cut[color[e.v]] += e.w;
   }
   for (const auto &k : art_cut) {
     ans = std::max(ans, k.second);
