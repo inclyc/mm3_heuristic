@@ -1,69 +1,47 @@
 #include "Heuristic/ColorGraph.h"
-#include <queue>
-namespace Heuristic {
-void ColorGraph::bfs() {
-  std::queue<int> q;
-  for (const auto u : A) {
-    q.push(u);
-  }
+#include "Heuristic/Graph.h"
+#include <algorithm>
+#include <functional>
+#include <iostream>
+#include <memory>
+#include <vector>
 
-  for (const auto u : B) {
-    q.push(u);
+void Heuristic::ColorGraph::getColor() {
+  auto low = std::make_unique<int[]>(vertexNum + 1);
+  auto dfn = std::make_unique<int[]>(vertexNum + 1);
+  auto vis = std::make_unique<bool[]>(vertexNum + 1);
+  auto ans = std::set<int>();
+  for (int i = 0; i < vertexNum + 1; i++) {
+    low[i] = dfn[i] = 0;
+    vis[i] = false;
   }
-
-  while (!q.empty()) {
-    int u = q.front();
-    bool inA = A.contains(u);
-    q.pop();
-    for (int i = head[static_cast<size_t>(u)]; i;
-         i = edges[static_cast<size_t>(i)].next) {
-      int v = edges[static_cast<size_t>(i)].v;
-      if (A.contains(v) || B.contains(v)) {
-        continue;
+  int cnt = 1;
+  std::function<void(int, int)> tarjan;
+  tarjan = [&](int u, int fa) {
+    vis[u] = true;
+    low[u] = dfn[u] = cnt++;
+    int child = 0;
+    for (const auto &e : edges[u]) {
+      int v = e.v;
+      if (!vis[v]) {
+        child++;
+        tarjan(v, u);
+        low[u] = std::min(low[u], low[v]);
+        if (fa != u && low[v] >= dfn[u]) {
+          ans.insert(u);
+        }
+      } else if (v != fa) {
+        low[u] = std::min(low[u], dfn[v]);
       }
-      if (inA) {
-        A.insert(v);
-        q.push(v);
-      } else {
-        B.insert(v);
-        q.push(v);
-      }
+    }
+    if (u == fa && child > 1)
+      ans.insert(u);
+  };
+  // by Robert E. Tarjan
+  // O(n)
+  for (int i = 1; i <= vertexNum; i++) {
+    if (!vis[i]) {
+      tarjan(i, i);
     }
   }
 }
-
-bool ColorGraph::checkSetConn(const std::set<int> &s) const {
-  std::set<int> visited;
-  std::queue<int> q;
-  for (const auto u : s) {
-    visited.insert(u);
-    q.push(u);
-  }
-  while (!q.empty()) {
-    int u = q.front();
-    q.pop();
-    for (int i = head[static_cast<size_t>(u)]; i;
-         i = edges[static_cast<size_t>(i)].next) {
-      int v = edges[static_cast<size_t>(i)].v;
-      if (s.contains(v) && !visited.contains(v)) {
-        visited.insert(v);
-        q.push(v);
-      }
-    }
-  }
-  return visited == s;
-}
-
-float ColorGraph::cut() const {
-  float sum = 0;
-  for (int i = 1; i <= edgeNum; i++) {
-    auto &e = edges[static_cast<size_t>(i)];
-    int u = e.u, v = e.v;
-    if (A.contains(u) && B.contains(v)) {
-      sum += e.w;
-    }
-  }
-  return sum;
-}
-
-} // namespace Heuristic

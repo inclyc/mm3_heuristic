@@ -1,23 +1,27 @@
-#ifndef HEURISRIC_GRAPH_H
-#define HEURISRIC_GRAPH_H
+#pragma once
 
 #include <memory>
+#include <vector>
 
 namespace Heuristic {
 
 struct Edge {
-  int u, v, next;
+  int v;
   float w;
+
+  bool operator<(const Edge &e) const { return w < e.w; }
 };
 
 class Graph {
 protected:
-  std::unique_ptr<Edge[]> edges;
-  std::unique_ptr<int[]> head;
+  std::unique_ptr<std::vector<Edge>[]> edges;
   int vertexNum, edgeNum;
 
 public:
-  Graph(int v, int e);
+  Graph(int v) {
+    edges = std::make_unique<std::vector<Edge>[]>(v + 1);
+    vertexNum = v;
+  }
   int getVertexNum() const { return vertexNum; }
   void addEdge(int u, int v, float w);
   void addBiEdge(int u, int v, float w) {
@@ -37,5 +41,3 @@ public:
 std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge);
 
 } // namespace Heuristic
-
-#endif

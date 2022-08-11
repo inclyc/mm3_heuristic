@@ -1,5 +1,5 @@
 add_rules("mode.debug", "mode.release")
 target("test_Heuristic")
+    set_kind("binary")
     add_files("*.cpp")
     add_deps("Heuristic")
-    add_deps("Random")

@@ -5,7 +5,7 @@ includes("Heuristic")
 includes("Random")
 add_includedirs("$(projectdir)/include")
 set_languages("cxx20")
-add_cxflags("-Weverything")
+add_cxflags("-Wall")
 add_cxxflags("-Wno-c++98-compat")
 add_cxxflags("-Wno-c++98-compat-pedantic")
 

@@ -6,21 +6,11 @@
 namespace Heuristic {
 void Graph::addEdge(int u, int v, float w) {
   edgeNum++;
-  auto &hdu = head[static_cast<size_t>(u)];
-  edges[static_cast<size_t>(edgeNum)] =
-      Edge{.u = u, .v = v, .next = hdu, .w = w};
-  hdu = edgeNum;
-}
-
-Graph::Graph(int v, int e) {
-  edges = std::make_unique<Edge[]>(static_cast<size_t>(e + 1));
-  head = std::make_unique<int[]>(static_cast<size_t>(v + 1));
-  edgeNum = 0;
-  vertexNum = v;
+  edges[u].push_back(Edge{.v = v, .w = w});
 }
 
 std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge) {
-  auto ret = std::make_unique<Graph>(n_vertex, n_edge * 2);
+  auto ret = std::make_unique<Graph>(n_vertex);
 
   assert(n_edge + 1 >= n_vertex);
 
