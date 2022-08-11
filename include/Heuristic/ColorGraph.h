@@ -17,7 +17,7 @@ public:
   }
   // give each vertex a color, stores in this->color
   // each cut vertex should be colored '-1'
-  void getColor();
+  int getColor();
 };
 
 } // namespace Heuristic
