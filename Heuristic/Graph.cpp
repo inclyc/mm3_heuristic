@@ -22,16 +22,16 @@ std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
     // so we add edge between i and randomly chosen node x
     // ensures [1, i] are connected then, and constraints
     // keeps to next iteration
-    Ans->addBiEdge(rand_range(1, I), I, rand_float());
+    Ans->addBiEdge(randRange(1, I), I, randFloat());
   }
 
   // now all vertexes are connected (as a tree)
   // generates [n_vertex, n_edge) edges here
   for (int I = VertexNum; I < EdgeNum; I++) {
     // u, v belongs to [1, n_vertex + 1)
-    int U = rand_range(1, VertexNum + 1);
-    int V = rand_range(1, VertexNum + 1);
-    Ans->addBiEdge(U, V, rand_float());
+    int U = randRange(1, VertexNum + 1);
+    int V = randRange(1, VertexNum + 1);
+    Ans->addBiEdge(U, V, randFloat());
   }
 
   return Ans;

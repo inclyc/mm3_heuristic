@@ -2,30 +2,18 @@
 #include <cassert>
 #include <cstdlib>
 
-/**
- * @brief helper function for generates integer in [l, r)
- *
- * @param l lower bound (inclusive)
- * @param r upper bound (exclusive)
- * @return the result
- */
-int rand_range(int l, int r) { return rand() % (r - l) + l; }
+int randRange(int L, int R) { return rand() % (R - L) + L; }
 
-/**
- * @brief random number between [0, 1)
- *
- * @return float
- */
-float rand_float() {
+float randFloat() {
   return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
-std::set<int> rand_set(int n, int l, int r) {
-  assert(r >= l && r >= l + n);
-  std::set<int> ret;
-  while (ret.size() < static_cast<size_t>(n)) {
-    int element = rand_range(l, r);
-    ret.insert(element);
+std::set<int> randSet(int N, int L, int R) {
+  assert(R >= L && R >= L + N);
+  std::set<int> Ans;
+  while (Ans.size() < static_cast<size_t>(N)) {
+    int Ele = randRange(L, R);
+    Ans.insert(Ele);
   }
-  return ret;
+  return Ans;
 }

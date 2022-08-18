@@ -2,28 +2,28 @@
 #include <set>
 
 /**
- * @brief helper function for generates integer in [l, r)
+ * @brief helper function for generates integer in [L, R)
  *
- * @param l lower bound (inclusive)
- * @param r upper bound (exclusive)
+ * @param L lower bound (inclusive)
+ * @param R upper bound (exclusive)
  * @return the result
  */
-int rand_range(int l, int r);
+int randRange(int L, int R);
 
 /**
  * @brief random number between [0, 1)
  *
  * @return float
  */
-float rand_float();
+float randFloat();
 
 /**
- * @brief n elements random set with element belongs to [l, r)
+ * @brief N elements random set with element belongs to [L, R)
  *
- * @param n number of elements
- * @param l lower bound (inclusive)
- * @param r upper bound (exclusive)
- * @note r >= l && r - l >= n
+ * @param N number of elements
+ * @param L lower bound (inclusive)
+ * @param R upper bound (exclusive)
+ * @note R >= L && R - L >= n
  * @return std::set<int>
  */
-std::set<int> rand_set(int n, int l, int r);
+std::set<int> randSet(int N, int L, int R);
