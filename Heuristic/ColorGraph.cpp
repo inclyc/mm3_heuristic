@@ -141,7 +141,7 @@ ColorGraph::solveArticulation(int U) {
             *   <------   U (Articulation Point)
            / \      <--------   max cut here
           /   \
-         *=----* (color 1)
+         *-----* (color 1)
          | BCC |
          +-----+
   */
