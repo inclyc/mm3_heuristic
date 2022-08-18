@@ -114,8 +114,22 @@ float ColorGraph::solveSet(std::set<int> s) {
 }
 
 float ColorGraph::solveArticulation(int u) {
+  /*
+        * ------*  (color 2)
+          \    /
+           \ /
+            *
+           / \      <--------   max cut here
+          /   \
+        *------* (color 1)
+        |  BCC |
+        +------+
+  */
   float ans = -1e5f;
+  // At vertex u, map color -> adjacent vertexes
   std::map<int, std::set<int>> mp;
+
+  // At vertex u, map color -> max cut
   std::map<int, float> art_cut;
   mp.clear();
   for (const auto &e : edges[u]) {
