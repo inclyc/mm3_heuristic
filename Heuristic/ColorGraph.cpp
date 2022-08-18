@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 namespace Heuristic {
-int ColorGraph::getColor() {
+int ColorGraph::getArticulationPoints() {
   auto LowestReach = std::make_unique<int[]>(VertexNum + 1);
   auto DfsNumber = std::make_unique<int[]>(VertexNum + 1);
   auto IsVisited = std::make_unique<bool[]>(VertexNum + 1);
@@ -33,7 +33,6 @@ int ColorGraph::getColor() {
         LowestReach[U] = std::min(LowestReach[U], LowestReach[V]);
         if (Fa != U && LowestReach[V] >= DfsNumber[U]) {
           ArticulationPoints.insert(U);
-          Color[U] = -1;
         }
       } else if (V != Fa) {
         LowestReach[U] = std::min(LowestReach[U], DfsNumber[V]);
@@ -41,7 +40,6 @@ int ColorGraph::getColor() {
     }
     if (U == Fa && Child > 1) {
       ArticulationPoints.insert(U);
-      Color[U] = -1;
     }
   };
   // by Robert E. Tarjan
@@ -51,89 +49,132 @@ int ColorGraph::getColor() {
       Tarjan(I, I);
     }
   }
+  return ArticulationPoints.size();
+}
+
+void ColorGraph::colorArticulationPoint(int A) {
   // Assign each node in BCC an ID and stores in 'color'
   // the color of some vertexes u is '-1', indicates that
   // these vertexes are articulation points
-  Count = 0; // for allocating ID
-  std::function<void(int)> Dfs;
-
+  int N = 0; // for allocating ID
+  auto IsVisited = std::make_unique<bool[]>(VertexNum + 1);
+  for (int I = 0; I <= VertexNum; I++) {
+    Color[I] = 0;
+    IsVisited[I] = false;
+  }
+  Color[A] = -1;
+  IsVisited[A] = true;
   // give node u as color `cnt`, and walk through dfs tree recursively
   // don't step in articulation or colored points.
-  Dfs = [&](int U) {
-    Color[U] = Count;
+  std::function<void(int)> DFS;
+  DFS = [&](int U) {
+    IsVisited[U] = true;
+    Color[U] = N;
     for (const auto &E : Edges[U]) {
       int V = E.V;
-      if (!Color[V]) {
+      if (!IsVisited[V]) {
         // i.e. we haven't assigned a color to v
-        Dfs(V);
+        DFS(V);
       }
     }
   };
 
-  for (int I = 1; I <= VertexNum; I++) {
-    if (!Color[I]) {
-      ++Count;
-      Dfs(I);
+  for (const auto &[U, _] : Edges[A]) {
+    if (!IsVisited[U]) {
+      N++;
+      DFS(U);
     }
   }
-  return ArticulationPoints.size();
 }
 
 std::pair<float, std::shared_ptr<std::set<int>>>
-ColorGraph::solveSet(std::shared_ptr<std::set<int>> S) {
-  float CurrentAnswer = 0.0f;
-  float Answer = -1e5f;
+ColorGraph::solveSet(std::shared_ptr<std::set<int>> S, int WorkColor) {
+  assert(!S->empty());
+  float CurrentAns = 0.0f;
+  float Ans = -1e5f;
+  // A set of vertexes we considering now
+  auto CurrentSet = std::make_shared<std::set<int>>(*S);
 
   // Each time we get a minimum edge from all available edge in this queue
-  std::priority_queue<Edge> PriorityQueue;
-
+  std::priority_queue<Edge> PQ;
   // Should return this
   std::shared_ptr<std::set<int>> AnsSet;
 
-  // A set of vertexes we considering now
-  auto CurrentSet = std::make_shared<std::set<int>>(*S);
+  auto IsVisited = std::make_unique<int[]>(VertexNum + 1); // For DFS
+  std::function<void(int)> DFS;
+  DFS = [&](int U) {
+    IsVisited[U] = true;
+    for (const auto &[V, _] : Edges[U]) {
+      if (!IsVisited[V] && Color[V] == WorkColor && !CurrentSet->contains(V)) {
+        DFS(V);
+      }
+    }
+  };
+
+  auto ClearVisited = [&]() {
+    for (int I = 0; I <= VertexNum; I++) {
+      IsVisited[I] = false;
+    }
+  };
+
+  auto CheckConnectivity = [&](int U) {
+    ClearVisited();
+    DFS(U);
+    for (int I = 1; I <= VertexNum; I++) {
+      if (!IsVisited[I] && Color[I] == WorkColor && !CurrentSet->contains(I)) {
+
+        return false;
+      }
+    }
+    return true;
+  };
+
   for (const auto &U : *S) {
     for (const auto &E : Edges[U]) {
       auto [V, W] = E;
       if (!CurrentSet->contains(V) && Color[V] == Color[U]) {
-        PriorityQueue.push(E);
-        CurrentAnswer += W;
+        PQ.push(E);
+        CurrentAns += W;
       }
     }
   }
-  while (!PriorityQueue.empty()) {
-    if (Answer < CurrentAnswer) {
-      Answer = CurrentAnswer;
+  while (!PQ.empty()) {
+
+    // Minimum weight edge we could use
+    const auto &CurrentMinEdge = PQ.top();
+    PQ.pop();
+    int U = CurrentMinEdge.V;
+    if (CurrentSet->contains(U))
+      continue;
+
+    assert(Color[U] == WorkColor);
+    if (CheckConnectivity(U) && Ans < CurrentAns) {
+      Ans = CurrentAns;
       // Copy TempSet because it may have some changes later
       // std::make_shared uses copy constructor
       AnsSet = std::make_shared<std::set<int>>(*CurrentSet);
     }
-    // Minimum weight edge we could use
-    const auto &CurrentMinEdge = PriorityQueue.top();
-    PriorityQueue.pop();
-    int U = CurrentMinEdge.V;
-    if (CurrentSet->contains(U))
-      continue;
 
     // Not inner edges, this edge points to a new vertex U
     // insert U to current set and update current answer
     CurrentSet->insert(U);
     for (const auto &E : Edges[U]) {
-      if (Color[E.V] != Color[U] || E.V == U)
+      const auto &[V, W] = E;
+      if (Color[V] != Color[U] || V == U)
         continue;
-      if (CurrentSet->contains(E.V)) {
-        CurrentAnswer -= E.W;
+      if (CurrentSet->contains(V)) {
+        CurrentAns -= W;
       } else {
-        CurrentAnswer += E.W;
-        PriorityQueue.push(E);
+        CurrentAns += W;
+        PQ.push(E);
       }
     }
   }
-  return std::make_pair(Answer, AnsSet);
+  return std::make_pair(Ans, AnsSet);
 }
 
 std::pair<float, std::shared_ptr<std::set<int>>>
-ColorGraph::solveArticulation(int U) {
+ColorGraph::solveArticulation(int A) {
   /*
          *-----*  (color 2)
           \   /
@@ -146,14 +187,16 @@ ColorGraph::solveArticulation(int U) {
          +-----+
   */
   float Ans = -1e5f;
+  assert(ArticulationPoints.contains(A));
+  colorArticulationPoint(A);
   std::shared_ptr<std::set<int>> AnsSet;
   // At vertex u, map color -> adjacent vertexes
   std::map<int, std::shared_ptr<std::set<int>>> AdjacentVertexMap;
 
   // At vertex u, map color -> max cut
   std::map<int, float> ArticulationCut;
-  for (const auto &E : Edges[U]) {
-    if (E.V == U)
+  for (const auto &E : Edges[A]) {
+    if (E.V == A)
       continue; // self loops
     if (!AdjacentVertexMap.contains(Color[E.V])) {
       AdjacentVertexMap.insert({Color[E.V], std::make_shared<std::set<int>>()});
@@ -162,14 +205,14 @@ ColorGraph::solveArticulation(int U) {
     AdjacentVertexMap[Color[E.V]]->insert(E.V);
     ArticulationCut[Color[E.V]] += E.W;
   }
-  for (const auto &[U, MaxCutOfU] : ArticulationCut) {
+  for (const auto &[AdjacentColor, MaxCutOfU] : ArticulationCut) {
     if (Ans < MaxCutOfU) {
       Ans = MaxCutOfU;
-      AnsSet = AdjacentVertexMap[U];
+      AnsSet = AdjacentVertexMap[AdjacentColor];
     }
   }
-  for (const auto &[U, AdjacentSet] : AdjacentVertexMap) {
-    auto [CandidateAns, CandidateAnsSet] = solveSet(AdjacentSet);
+  for (const auto &[AdjacentColor, AdjacentSet] : AdjacentVertexMap) {
+    auto [CandidateAns, CandidateAnsSet] = solveSet(AdjacentSet, AdjacentColor);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
       AnsSet = CandidateAnsSet;
@@ -181,7 +224,7 @@ ColorGraph::solveArticulation(int U) {
 std::pair<float, std::shared_ptr<std::set<int>>> ColorGraph::solve() {
   float Ans = -1e5f;
   std::shared_ptr<std::set<int>> AnsSet;
-  getColor();
+  getArticulationPoints();
   for (const auto &U : ArticulationPoints) {
     auto [CandidateAns, CandidateSet] = solveArticulation(U);
     if (Ans < CandidateAns) {

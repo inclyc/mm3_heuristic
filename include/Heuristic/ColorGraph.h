@@ -20,16 +20,18 @@ public:
   /// @brief give each vertex a color, stores in this->color
   /// each cut vertex should be colored '-1'
   /// @return the number of articulation points
-  int getColor();
+  int getArticulationPoints();
 
   /// @brief start from a small set \p S, perform Prim-like heuristic search
   /// @return approximate result
   std::pair<float, std::shared_ptr<std::set<int>>>
-  solveSet(std::shared_ptr<std::set<int>> S);
+  solveSet(std::shared_ptr<std::set<int>> S, int WorkColor);
 
   std::pair<float, std::shared_ptr<std::set<int>>> solveArticulation(int U);
 
   std::pair<float, std::shared_ptr<std::set<int>>> solve();
+
+  void colorArticulationPoint(int A);
 
   void dumpArticulationPoints();
 
