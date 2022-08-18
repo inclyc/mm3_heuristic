@@ -4,18 +4,8 @@
 #include <memory>
 
 int main() {
-  int VertexNum, EdgeNum;
-  std::cin >> VertexNum;
-  std::cin >> EdgeNum;
-  auto Graph = std::make_unique<Heuristic::ColorGraph>(VertexNum);
-  for (int I = 0; I < EdgeNum; I++) {
-    int U, V;
-    float W;
-    std::cin >> U;
-    std::cin >> V;
-    std::cin >> W;
-    Graph->addBiEdge(U, V, W);
-  }
+  auto Graph = std::make_unique<Heuristic::ColorGraph>();
+  std::cin >> *Graph;
   auto [Ans, AnsSet] = Graph->solve();
   Graph->dumpArticulationPoints();
   std::cout << Ans << std::endl;

@@ -37,4 +37,22 @@ std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
   return Ans;
 }
 
+void Graph::setVertexNum(int VertexNum) {
+  this->VertexNum = VertexNum;
+  Edges = std::make_unique<std::vector<Edge>[]>(VertexNum + 1);
+}
+
+std::istream &operator>>(std::istream &IS, Graph &G) {
+  int VertexNum, EdgeNum;
+  IS >> VertexNum >> EdgeNum;
+  G.setVertexNum(VertexNum);
+  for (int I = 0; I < EdgeNum; I++) {
+    int U, V;
+    float W;
+    IS >> U >> V >> W;
+    G.addBiEdge(U, V, W);
+  }
+  return IS;
+}
+
 } // namespace Heuristic

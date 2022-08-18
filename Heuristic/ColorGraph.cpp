@@ -249,4 +249,10 @@ void ColorGraph::dumpColor() {
     std::cout << I << " " << Color[I] << std::endl;
   }
 }
+
+void ColorGraph::setVertexNum(int VertexNum) {
+  Graph::setVertexNum(VertexNum);
+  Color = std::make_unique<int[]>(VertexNum + 1);
+}
+
 } // namespace Heuristic

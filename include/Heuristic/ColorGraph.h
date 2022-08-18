@@ -11,12 +11,17 @@ private:
   std::set<int> ArticulationPoints;
 
 public:
-  ColorGraph(int V) : Graph(V) {
+  ColorGraph(int VertexNum) : Graph(VertexNum) {
     // allocate (v + 1) std::vector
     // vertexes number might started from 1.
-    Color = std::make_unique<int[]>(V + 1);
-    ArticulationPoints = std::set<int>();
+    ColorGraph();
+    setVertexNum(VertexNum);
   }
+
+  ColorGraph() { ArticulationPoints = std::set<int>(); }
+
+  void setVertexNum(int VertexNum);
+
   /// @brief give each vertex a color, stores in this->color
   /// each cut vertex should be colored '-1'
   /// @return the number of articulation points

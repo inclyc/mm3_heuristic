@@ -1,5 +1,6 @@
 #pragma once
 
+#include <istream>
 #include <memory>
 #include <vector>
 
@@ -22,12 +23,17 @@ public:
     Edges = std::make_unique<std::vector<Edge>[]>(V + 1);
     VertexNum = V;
   }
+
+  Graph() {}
+  virtual void setVertexNum(int VertexNum);
   int getVertexNum() const { return VertexNum; }
   void addEdge(int U, int V, float W);
   void addBiEdge(int U, int V, float W) {
     addEdge(U, V, W);
     addEdge(V, U, W);
   }
+
+  friend std::istream &operator>>(std::istream &IS, Graph &G);
 };
 
 /**
