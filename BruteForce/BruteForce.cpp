@@ -1,15 +1,11 @@
-// Author: lyc
-// 2021/10/20
-// 图暴力搜索答案程序
-// 通常来讲需要输入预处理后的图。
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
 #include <string>
-
+#define InMask(Mask, V) ((1ll << ((V)-1)) & Mask)
 const int MaxVertexNum = 200;
-#define InMask(v) ((1ll << ((v)-1)) & Mask)
+
 struct Edge {
   int From, To, NextEdge;
   float Weight;
@@ -33,7 +29,7 @@ void addEdge(int From, int To, float Weight) {
 }
 
 void dfsColoring(int U, int Marker) {
-  if (!InMask(U) && Marker == 1)
+  if (!InMask(Mask, U) && Marker == 1)
     return; // 如果在染A集合，不能染到外面去
   Color[U] = Marker;
   for (int I = Head[U]; ~I; I = Edges[I].NextEdge) {
@@ -51,7 +47,7 @@ int checkDirection() {
     int U = WhiteVertexes[VertexIdx];
     for (int EdgeIdx = Head[U]; ~EdgeIdx; EdgeIdx = Edges[EdgeIdx].NextEdge) {
       int V = Edges[EdgeIdx].To;
-      if (InMask(V)) {
+      if (InMask(Mask, V)) {
         continue; // 是集合A的内部边
       }
       if (~DirectionFlag) {
@@ -76,7 +72,7 @@ void calcCut() {
     int Vertex = WhiteVertexes[K];
     for (int I = Head[Vertex]; ~I; I = Edges[I].NextEdge) {
       int V = Edges[I].To;
-      if (!InMask(V)) {
+      if (!InMask(Mask, V)) {
         CutEdgeNum++;
         WeightSum += Edges[I].Weight;
       }
@@ -143,6 +139,15 @@ void clearGraph() {
   EdgeNum = 0;
 }
 
+void prettyPrintAnsSet(std::uint64_t Mask) {
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    if (InMask(Mask, Vertex)) {
+      printf("%d ", Vertex);
+    }
+  }
+  puts("");
+}
+
 int main() {
   clearGraph();
   int EdgeInputNum;
@@ -154,11 +159,8 @@ int main() {
     addEdge(U, V, W);
     addEdge(V, U, W);
   }
-  clock_t Start, End;
-  Start = clock();
   getAns();
-  End = clock();
-  printf("%.3f %.5f %lx\n", Ans, (double)(End - Start) / CLOCKS_PER_SEC,
-         AnsMask);
+  printf("%.3f\n", Ans);
+  prettyPrintAnsSet(AnsMask);
   // print_union_result();
 }
