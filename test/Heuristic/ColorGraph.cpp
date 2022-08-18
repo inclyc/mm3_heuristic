@@ -17,6 +17,8 @@ int main() {
     Graph->addBiEdge(U, V, W);
   }
   auto [Ans, AnsSet] = Graph->solve();
+  Graph->dumpColor();
+  Graph->dumpArticulationPoints();
   std::cout << Ans << std::endl;
   for (const auto &U : *AnsSet) {
     std::cout << U << " ";

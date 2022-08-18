@@ -135,7 +135,7 @@ ColorGraph::solveSet(std::shared_ptr<std::set<int>> S) {
 std::pair<float, std::shared_ptr<std::set<int>>>
 ColorGraph::solveArticulation(int U) {
   /*
-         * ----*  (color 2)
+         *-----*  (color 2)
           \   /
            \ /
             *   <------   U (Articulation Point)
@@ -172,7 +172,7 @@ ColorGraph::solveArticulation(int U) {
     auto [CandidateAns, CandidateAnsSet] = solveSet(AdjacentSet);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
-      AnsSet = AdjacentSet;
+      AnsSet = CandidateAnsSet;
     }
   }
   return std::make_pair(Ans, AnsSet);
@@ -192,4 +192,18 @@ std::pair<float, std::shared_ptr<std::set<int>>> ColorGraph::solve() {
   return std::make_pair(Ans, AnsSet);
 }
 
+void ColorGraph::dumpArticulationPoints() {
+  std::cout << "Articulation Points:" << std::endl;
+  for (const auto &U : ArticulationPoints) {
+    std::cout << U << " ";
+  }
+  std::cout << std::endl;
+}
+
+void ColorGraph::dumpColor() {
+  std::cout << "Color:" << std::endl;
+  for (int I = 1; I <= VertexNum; I++) {
+    std::cout << I << " " << Color[I] << std::endl;
+  }
+}
 } // namespace Heuristic

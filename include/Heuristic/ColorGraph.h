@@ -30,6 +30,10 @@ public:
   std::pair<float, std::shared_ptr<std::set<int>>> solveArticulation(int U);
 
   std::pair<float, std::shared_ptr<std::set<int>>> solve();
+
+  void dumpArticulationPoints();
+
+  void dumpColor();
 };
 
 } // namespace Heuristic
