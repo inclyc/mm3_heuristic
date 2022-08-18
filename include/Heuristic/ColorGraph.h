@@ -6,29 +6,30 @@
 namespace Heuristic {
 class ColorGraph : public Graph {
 private:
-  std::unique_ptr<int[]> color;
+  std::unique_ptr<int[]> Color;
   bool checkSetConn(const std::set<int> &) const;
-  std::set<int> articulation_points;
+  std::set<int> ArticulationPoints;
 
 public:
-  ColorGraph(int v) : Graph(v) {
+  ColorGraph(int V) : Graph(V) {
     // allocate (v + 1) std::vector
     // vertexes number might started from 1.
-    color = std::make_unique<int[]>(v + 1);
-    articulation_points = std::set<int>();
+    Color = std::make_unique<int[]>(V + 1);
+    ArticulationPoints = std::set<int>();
   }
   /// @brief give each vertex a color, stores in this->color
   /// each cut vertex should be colored '-1'
   /// @return the number of articulation points
   int getColor();
 
-  /// @brief start from a small set s, perform Prim-like heuristic search
+  /// @brief start from a small set \p S, perform Prim-like heuristic search
   /// @return approximate result
-  float solveSet(std::set<int> s);
+  std::pair<float, std::shared_ptr<std::set<int>>>
+  solveSet(std::shared_ptr<std::set<int>> S);
 
-  float solveArticulation(int u);
+  std::pair<float, std::shared_ptr<std::set<int>>> solveArticulation(int U);
 
-  float solve();
+  std::pair<float, std::shared_ptr<std::set<int>>> solve();
 };
 
 } // namespace Heuristic

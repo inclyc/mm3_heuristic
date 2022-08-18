@@ -4,37 +4,37 @@
 #include <cstdlib>
 #include <memory>
 namespace Heuristic {
-void Graph::addEdge(int u, int v, float w) {
-  edgeNum++;
-  edges[u].push_back(Edge{.v = v, .w = w});
+void Graph::addEdge(int U, int V, float W) {
+  EdgeNum++;
+  Edges[U].push_back(Edge{.V = V, .W = W});
 }
 
-std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge) {
-  auto ret = std::make_unique<Graph>(n_vertex);
+std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
+  auto Ans = std::make_unique<Graph>(VertexNum);
 
-  assert(n_edge + 1 >= n_vertex);
+  assert(EdgeNum + 1 >= VertexNum);
 
   // generate a tree at first
   // for edges: [1, n_vertex)
-  for (int i = 2; i <= n_vertex; i++) {
+  for (int I = 2; I <= VertexNum; I++) {
     // u belongs to [1, i)
     // loop constraints: nodes between [1, i) connected before
     // so we add edge between i and randomly chosen node x
     // ensures [1, i] are connected then, and constraints
     // keeps to next iteration
-    ret->addBiEdge(rand_range(1, i), i, rand_float());
+    Ans->addBiEdge(rand_range(1, I), I, rand_float());
   }
 
   // now all vertexes are connected (as a tree)
   // generates [n_vertex, n_edge) edges here
-  for (int i = n_vertex; i < n_edge; i++) {
+  for (int I = VertexNum; I < EdgeNum; I++) {
     // u, v belongs to [1, n_vertex + 1)
-    int u = rand_range(1, n_vertex + 1);
-    int v = rand_range(1, n_vertex + 1);
-    ret->addBiEdge(u, v, rand_float());
+    int U = rand_range(1, VertexNum + 1);
+    int V = rand_range(1, VertexNum + 1);
+    Ans->addBiEdge(U, V, rand_float());
   }
 
-  return ret;
+  return Ans;
 }
 
 } // namespace Heuristic

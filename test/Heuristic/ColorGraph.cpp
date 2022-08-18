@@ -2,18 +2,24 @@
 #include "Heuristic/Graph.h"
 #include <iostream>
 #include <memory>
+
 int main() {
-  int n, m;
-  std::cin >> n;
-  std::cin >> m;
-  auto p = std::make_unique<Heuristic::ColorGraph>(n);
-  for (int i = 0; i < m; i++) {
-    int u, v;
-    float w;
-    std::cin >> u;
-    std::cin >> v;
-    std::cin >> w;
-    p->addBiEdge(u, v, w);
+  int VertexNum, EdgeNum;
+  std::cin >> VertexNum;
+  std::cin >> EdgeNum;
+  auto Graph = std::make_unique<Heuristic::ColorGraph>(VertexNum);
+  for (int I = 0; I < EdgeNum; I++) {
+    int U, V;
+    float W;
+    std::cin >> U;
+    std::cin >> V;
+    std::cin >> W;
+    Graph->addBiEdge(U, V, W);
   }
-  std::cout << p->solve() << std::endl;
+  auto [Ans, AnsSet] = Graph->solve();
+  std::cout << Ans << std::endl;
+  for (const auto &U : *AnsSet) {
+    std::cout << U << " ";
+  }
+  std::cout << std::endl;
 }

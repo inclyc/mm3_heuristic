@@ -6,27 +6,27 @@
 namespace Heuristic {
 
 struct Edge {
-  int v;
-  float w;
+  int V;
+  float W;
 
-  bool operator<(const Edge &e) const { return w < e.w; }
+  bool operator<(const Edge &E) const { return W < E.W; }
 };
 
 class Graph {
 protected:
-  std::unique_ptr<std::vector<Edge>[]> edges;
-  int vertexNum, edgeNum;
+  std::unique_ptr<std::vector<Edge>[]> Edges;
+  int VertexNum, EdgeNum;
 
 public:
-  Graph(int v) {
-    edges = std::make_unique<std::vector<Edge>[]>(v + 1);
-    vertexNum = v;
+  Graph(int V) {
+    Edges = std::make_unique<std::vector<Edge>[]>(V + 1);
+    VertexNum = V;
   }
-  int getVertexNum() const { return vertexNum; }
-  void addEdge(int u, int v, float w);
-  void addBiEdge(int u, int v, float w) {
-    addEdge(u, v, w);
-    addEdge(v, u, w);
+  int getVertexNum() const { return VertexNum; }
+  void addEdge(int U, int V, float W);
+  void addBiEdge(int U, int V, float W) {
+    addEdge(U, V, W);
+    addEdge(V, U, W);
   }
 };
 
@@ -38,6 +38,6 @@ public:
  * @note ensure e >= v - 1
  * @return std::unique_ptr<Graph>
  */
-std::unique_ptr<Graph> random_bigraph(int n_vertex, int n_edge);
+std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum);
 
 } // namespace Heuristic
