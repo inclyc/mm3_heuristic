@@ -55,4 +55,8 @@ std::istream &operator>>(std::istream &IS, Graph &G) {
   return IS;
 }
 
+const std::vector<Edge> &Graph::operator[](int Vertex) const {
+  return Edges[Vertex];
+}
+
 } // namespace Heuristic

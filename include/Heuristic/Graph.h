@@ -34,6 +34,8 @@ public:
   }
 
   friend std::istream &operator>>(std::istream &IS, Graph &G);
+
+  const std::vector<Edge> &operator[](int Vertex) const;
 };
 
 /**
