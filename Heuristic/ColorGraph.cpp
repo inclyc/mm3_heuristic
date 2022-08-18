@@ -135,15 +135,15 @@ ColorGraph::solveSet(std::shared_ptr<std::set<int>> S) {
 std::pair<float, std::shared_ptr<std::set<int>>>
 ColorGraph::solveArticulation(int U) {
   /*
-        * ------*  (color 2)
-          \    /
+         * ----*  (color 2)
+          \   /
            \ /
-            *
+            *   <------   U (Articulation Point)
            / \      <--------   max cut here
           /   \
-        *------* (color 1)
-        |  BCC |
-        +------+
+         *=----* (color 1)
+         | BCC |
+         +-----+
   */
   float Ans = -1e5f;
   std::shared_ptr<std::set<int>> AnsSet;

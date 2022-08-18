@@ -15,20 +15,20 @@ std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
   assert(EdgeNum + 1 >= VertexNum);
 
   // generate a tree at first
-  // for edges: [1, n_vertex)
+  // for edges: [1, VertexNum)
   for (int I = 2; I <= VertexNum; I++) {
-    // u belongs to [1, i)
-    // loop constraints: nodes between [1, i) connected before
-    // so we add edge between i and randomly chosen node x
-    // ensures [1, i] are connected then, and constraints
+    // u belongs to [1, I)
+    // loop constraints: nodes between [1, I) connected before
+    // so we add edge between I and randomly chosen node X
+    // ensures [1, I] are connected then, and constraints
     // keeps to next iteration
     Ans->addBiEdge(randRange(1, I), I, randFloat());
   }
 
   // now all vertexes are connected (as a tree)
-  // generates [n_vertex, n_edge) edges here
+  // generates [VertexNum, EdgeNum) edges here
   for (int I = VertexNum; I < EdgeNum; I++) {
-    // u, v belongs to [1, n_vertex + 1)
+    // U, V belongs to [1, VertexNum + 1)
     int U = randRange(1, VertexNum + 1);
     int V = randRange(1, VertexNum + 1);
     Ans->addBiEdge(U, V, randFloat());
