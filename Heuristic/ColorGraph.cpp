@@ -255,7 +255,6 @@ std::shared_ptr<std::set<int>>
 ColorGraph::constructFinalAnswer(int A, int WorkColor,
                                  std::shared_ptr<std::set<int>> Chosen) {
   colorArticulationPoint(A);
-  dumpColor();
   auto AnsSet = std::make_shared<std::set<int>>();
   auto IsVisited = std::make_unique<bool[]>(VertexNum + 1); // For DFS
 
