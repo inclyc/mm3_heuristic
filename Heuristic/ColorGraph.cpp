@@ -148,7 +148,9 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
       continue;
 
     assert(Color[U] == WorkColor);
-    if (CheckConnectivity(U) && Ans < CurrentAns) {
+    if (!CheckConnectivity(U))
+      continue;
+    if (Ans < CurrentAns) {
       Ans = CurrentAns;
       // Copy TempSet because it may have some changes later
       // std::make_shared uses copy constructor
@@ -175,43 +177,31 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
 
 std::pair<float, std::shared_ptr<std::set<int>>>
 ColorGraph::solveArticulation(int A) {
-  /*
-         *-----*  (color 2)
+  /*     +-----+
+         | BCC |  <-- (color 2) <-- must be in the same set as U
+         *-----*
           \   /
            \ /
             *   <------   U (Articulation Point)
-           / \      <--------   max cut here
+           / \
           /   \
          *-----* (color 1)
-         | BCC |
+         | BCC |   <-- consider this BCC contains different color,
          +-----+
   */
   float Ans = -1e5f;
   assert(ArticulationPoints.contains(A));
   colorArticulationPoint(A);
   std::shared_ptr<std::set<int>> AnsSet;
-  // At vertex u, map color -> adjacent vertexes
-  std::map<int, std::shared_ptr<std::set<int>>> AdjacentVertexMap;
-
+  auto ColorSet = std::make_shared<std::set<int>>();
   // At vertex u, map color -> max cut
   std::map<int, float> ArticulationCut;
   for (const auto &E : Edges[A]) {
     if (E.V == A)
       continue; // self loops
-    if (!AdjacentVertexMap.contains(Color[E.V])) {
-      AdjacentVertexMap.insert({Color[E.V], std::make_shared<std::set<int>>()});
-      ArticulationCut.insert({Color[E.V], 0});
-    }
-    AdjacentVertexMap[Color[E.V]]->insert(E.V);
-    ArticulationCut[Color[E.V]] += E.W;
+    ColorSet->insert(Color[E.V]);
   }
-  for (const auto &[AdjacentColor, MaxCutOfU] : ArticulationCut) {
-    if (Ans < MaxCutOfU) {
-      Ans = MaxCutOfU;
-      AnsSet = AdjacentVertexMap[AdjacentColor];
-    }
-  }
-  for (const auto &[AdjacentColor, AdjacentSet] : AdjacentVertexMap) {
+  for (const auto &AdjacentColor : *ColorSet) {
     auto [CandidateAns, CandidateAnsSet] = solveArticulation(A, AdjacentColor);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
