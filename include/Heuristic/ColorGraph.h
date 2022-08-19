@@ -36,6 +36,8 @@ public:
 
   std::pair<float, std::shared_ptr<std::set<int>>> solve();
 
+  std::shared_ptr<std::set<int>> createRealAns();
+
   void colorArticulationPoint(int A);
 
   void dumpArticulationPoints();

@@ -101,6 +101,8 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   std::shared_ptr<std::set<int>> AnsSet;
 
   auto IsVisited = std::make_unique<int[]>(VertexNum + 1); // For DFS
+
+  // Visit & mark each nodes could be reached from U
   std::function<void(int)> DFS;
   DFS = [&](int U) {
     IsVisited[U] = true;
@@ -111,18 +113,16 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
     }
   };
 
-  auto ClearVisited = [&]() {
+  /// @param U check if all nodes colored as `WorkColor' are connected
+  auto CheckConnectivity = [&](int U) {
+    // reset visited array for DFS
+    // in DFS search, we mark nodes we can reach a label "visited"
     for (int I = 0; I <= VertexNum; I++) {
       IsVisited[I] = false;
     }
-  };
-
-  auto CheckConnectivity = [&](int U) {
-    ClearVisited();
     DFS(U);
     for (int I = 1; I <= VertexNum; I++) {
       if (!IsVisited[I] && Color[I] == WorkColor && !CurrentSet->contains(I)) {
-
         return false;
       }
     }
@@ -148,9 +148,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
       continue;
 
     assert(Color[U] == WorkColor);
-    if (!CheckConnectivity(U))
-      continue;
-    if (Ans < CurrentAns) {
+    if (Ans < CurrentAns && CheckConnectivity(U)) {
       Ans = CurrentAns;
       // Copy the set because it may have some changes later
       // std::make_shared uses copy constructor
