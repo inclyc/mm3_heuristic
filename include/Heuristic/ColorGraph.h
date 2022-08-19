@@ -32,11 +32,17 @@ public:
   std::pair<float, std::shared_ptr<std::set<int>>>
   solveArticulation(int A, int WorkColor);
 
-  std::pair<float, std::shared_ptr<std::set<int>>> solveArticulation(int U);
+  std::tuple<float, int, std::shared_ptr<std::set<int>>>
+  solveArticulation(int U);
 
   std::pair<float, std::shared_ptr<std::set<int>>> solve();
 
-  std::shared_ptr<std::set<int>> createRealAns();
+  /// @brief construct real answer (all nodes decided)
+  /// we get pseudo answer in a subgraph splitted by articulation nodes
+  /// @return nodes should be put in left hand side of bipartite graph
+  std::shared_ptr<std::set<int>>
+  constructFinalAnswer(int A, int WorkColor,
+                       std::shared_ptr<std::set<int>> Chosen);
 
   void colorArticulationPoint(int A);
 

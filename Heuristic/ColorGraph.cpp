@@ -173,7 +173,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   return std::make_pair(Ans, AnsSet);
 }
 
-std::pair<float, std::shared_ptr<std::set<int>>>
+std::tuple<float, int, std::shared_ptr<std::set<int>>>
 ColorGraph::solveArticulation(int A) {
   /*     +-----+
          | BCC |  <-- (color 2) <-- must be in the same set as U
@@ -192,6 +192,7 @@ ColorGraph::solveArticulation(int A) {
   colorArticulationPoint(A);
   std::shared_ptr<std::set<int>> AnsSet;
   auto ColorSet = std::make_shared<std::set<int>>();
+  int AnsWorkColor = 0;
   // At vertex u, map color -> max cut
   std::map<int, float> ArticulationCut;
   for (const auto &E : Edges[A]) {
@@ -199,28 +200,35 @@ ColorGraph::solveArticulation(int A) {
       continue; // self loops
     ColorSet->insert(Color[E.V]);
   }
-  for (const auto &AdjacentColor : *ColorSet) {
-    auto [CandidateAns, CandidateAnsSet] = solveArticulation(A, AdjacentColor);
+  for (const auto &WorkColor : *ColorSet) {
+    auto [CandidateAns, CandidateAnsSet] = solveArticulation(A, WorkColor);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
       AnsSet = CandidateAnsSet;
+      AnsWorkColor = WorkColor;
     }
   }
-  return std::make_pair(Ans, AnsSet);
+  return std::make_tuple(Ans, AnsWorkColor, AnsSet);
 }
 
 std::pair<float, std::shared_ptr<std::set<int>>> ColorGraph::solve() {
   float Ans = -1e5f;
   std::shared_ptr<std::set<int>> AnsSet;
+  int AnsWorkColor = 0;
+  int AnsArticulationPoint = 0;
   getArticulationPoints();
   for (const auto &U : ArticulationPoints) {
-    auto [CandidateAns, CandidateSet] = solveArticulation(U);
+    auto [CandidateAns, CandidateWorkColor, CandidateSet] =
+        solveArticulation(U);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
       AnsSet = CandidateSet;
+      AnsArticulationPoint = U;
+      AnsWorkColor = CandidateWorkColor;
     }
   }
-  return std::make_pair(Ans, AnsSet);
+  return std::make_pair(
+      Ans, constructFinalAnswer(AnsArticulationPoint, AnsWorkColor, AnsSet));
 }
 
 void ColorGraph::dumpArticulationPoints() {
@@ -241,6 +249,39 @@ void ColorGraph::dumpColor() {
 void ColorGraph::setVertexNum(int VertexNum) {
   Graph::setVertexNum(VertexNum);
   Color = std::make_unique<int[]>(VertexNum + 1);
+}
+
+std::shared_ptr<std::set<int>>
+ColorGraph::constructFinalAnswer(int A, int WorkColor,
+                                 std::shared_ptr<std::set<int>> Chosen) {
+  colorArticulationPoint(A);
+  dumpColor();
+  auto AnsSet = std::make_shared<std::set<int>>();
+  auto IsVisited = std::make_unique<bool[]>(VertexNum + 1); // For DFS
+
+  // prepare visited array for DFS
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    IsVisited[Vertex] = false;
+  }
+
+  // Visit & mark each nodes could be reached from U (only work color)
+  // Insert vertex v if it is colored as work color, and not be chosen
+  std::function<void(int)> DFS;
+  DFS = [&](int U) {
+    IsVisited[U] = true;
+    if (Color[U] == WorkColor && !Chosen->contains(U)) {
+      AnsSet->insert(U);
+    }
+    for (const auto &[V, _] : Edges[U]) {
+      if (!IsVisited[V] && Color[V] == WorkColor) {
+        DFS(V);
+      }
+    }
+  };
+
+  DFS(A);
+
+  return AnsSet;
 }
 
 } // namespace Heuristic
