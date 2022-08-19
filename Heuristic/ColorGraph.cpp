@@ -88,12 +88,12 @@ void ColorGraph::colorArticulationPoint(int A) {
 }
 
 std::pair<float, std::shared_ptr<std::set<int>>>
-ColorGraph::solveSet(std::shared_ptr<std::set<int>> S, int WorkColor) {
-  assert(!S->empty());
+ColorGraph::solveArticulation(int A, int WorkColor) {
   float CurrentAns = 0.0f;
   float Ans = -1e5f;
   // A set of vertexes we considering now
-  auto CurrentSet = std::make_shared<std::set<int>>(*S);
+  auto CurrentSet = std::make_shared<std::set<int>>();
+  CurrentSet->insert(A);
 
   // Each time we get a minimum edge from all available edge in this queue
   std::priority_queue<Edge> PQ;
@@ -129,7 +129,7 @@ ColorGraph::solveSet(std::shared_ptr<std::set<int>> S, int WorkColor) {
     return true;
   };
 
-  for (const auto &U : *S) {
+  for (const auto &U : *CurrentSet) {
     for (const auto &E : Edges[U]) {
       auto [V, W] = E;
       if (!CurrentSet->contains(V) && Color[V] == Color[U]) {
@@ -212,7 +212,7 @@ ColorGraph::solveArticulation(int A) {
     }
   }
   for (const auto &[AdjacentColor, AdjacentSet] : AdjacentVertexMap) {
-    auto [CandidateAns, CandidateAnsSet] = solveSet(AdjacentSet, AdjacentColor);
+    auto [CandidateAns, CandidateAnsSet] = solveArticulation(A, AdjacentColor);
     if (Ans < CandidateAns) {
       Ans = CandidateAns;
       AnsSet = CandidateAnsSet;

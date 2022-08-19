@@ -27,10 +27,10 @@ public:
   /// @return the number of articulation points
   int getArticulationPoints();
 
-  /// @brief start from a small set \p S, perform Prim-like heuristic search
+  /// @brief start from articulation point \p A, perform Prim-like search
   /// @return approximate result
   std::pair<float, std::shared_ptr<std::set<int>>>
-  solveSet(std::shared_ptr<std::set<int>> S, int WorkColor);
+  solveArticulation(int A, int WorkColor);
 
   std::pair<float, std::shared_ptr<std::set<int>>> solveArticulation(int U);
 
