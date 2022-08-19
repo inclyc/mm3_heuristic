@@ -152,7 +152,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
       continue;
     if (Ans < CurrentAns) {
       Ans = CurrentAns;
-      // Copy TempSet because it may have some changes later
+      // Copy the set because it may have some changes later
       // std::make_shared uses copy constructor
       AnsSet = std::make_shared<std::set<int>>(*CurrentSet);
     }
