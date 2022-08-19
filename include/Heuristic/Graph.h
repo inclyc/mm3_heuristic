@@ -10,7 +10,7 @@ struct Edge {
   int V;
   float W;
 
-  bool operator<(const Edge &E) const { return W < E.W; }
+  bool operator<(const Edge &E) const { return W > E.W; }
 };
 
 class Graph {

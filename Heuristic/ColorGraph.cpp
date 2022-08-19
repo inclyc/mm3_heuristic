@@ -130,7 +130,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   };
 
   for (const auto &U : *CurrentSet) {
-    for (const auto &E : Edges[U]) {
+    for (const auto E : Edges[U]) {
       auto [V, W] = E;
       if (!CurrentSet->contains(V) && Color[V] == WorkColor) {
         PQ.push(E);
@@ -141,7 +141,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   while (!PQ.empty()) {
 
     // Minimum weight edge we could use
-    const auto &CurrentMinEdge = PQ.top();
+    const auto CurrentMinEdge = PQ.top();
     PQ.pop();
     int U = CurrentMinEdge.V;
     if (CurrentSet->contains(U))
@@ -158,7 +158,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
     // Not inner edges, this edge points to a new vertex U
     // insert U to current set and update current answer
     CurrentSet->insert(U);
-    for (const auto &E : Edges[U]) {
+    for (const auto E : Edges[U]) {
       const auto &[V, W] = E;
       if (CurrentSet->contains(V)) {
         CurrentAns -= W;
