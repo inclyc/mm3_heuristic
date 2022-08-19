@@ -132,7 +132,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   for (const auto &U : *CurrentSet) {
     for (const auto &E : Edges[U]) {
       auto [V, W] = E;
-      if (!CurrentSet->contains(V) && Color[V] == Color[U]) {
+      if (!CurrentSet->contains(V) && Color[V] == WorkColor) {
         PQ.push(E);
         CurrentAns += W;
       }
@@ -162,10 +162,10 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
     CurrentSet->insert(U);
     for (const auto &E : Edges[U]) {
       const auto &[V, W] = E;
-      if (Color[V] != Color[U] || V == U)
-        continue;
       if (CurrentSet->contains(V)) {
         CurrentAns -= W;
+      } else if (Color[V] != WorkColor) {
+        continue;
       } else {
         CurrentAns += W;
         PQ.push(E);
