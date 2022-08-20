@@ -3,10 +3,13 @@
 #include "Heuristic/DisjointSet.h"
 #include "Random/Random.h"
 #include <algorithm>
+#include <bitset>
 #include <cassert>
-#include <cstdlib>
+#include <cstdint>
 #include <memory>
+#include <sys/types.h>
 #include <utility>
+
 namespace Heuristic {
 void Graph::addEdge(int U, int V, float W) {
   EdgeNum++;
@@ -66,6 +69,80 @@ const std::vector<Edge> &Graph::operator[](int Vertex) const {
 
 const std::vector<Edge> &Graph::getEdgesAt(int Vertex) const {
   return EdgesOfNode[Vertex];
+}
+
+static constexpr bool inSet(int S, int Vertex) {
+  return S & (1ll << (Vertex - 1));
+}
+
+static bool checkConnectivity(const Graph &G, const int S) {
+  int BeginVertex = -1, VertexNum = G.getVertexNum();
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    if (inSet(S, Vertex)) {
+      BeginVertex = Vertex;
+    }
+  }
+  if (BeginVertex == -1)
+    return false; // 舍去空集的情况
+  auto Visited = std::make_unique<bool[]>(VertexNum);
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    Visited[Vertex] = false;
+  }
+  std::function<void(int)> DFS;
+  DFS = [&](int U) {
+    Visited[U] = true;
+    for (const auto &E : G.getEdgesAt(U)) {
+      auto &[V, _] = E;
+      if (!Visited[V] && inSet(S, V)) {
+        DFS(V);
+      }
+    }
+  };
+
+  DFS(BeginVertex);
+
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    if (inSet(S, Vertex) && !Visited[Vertex])
+      return false;
+  }
+  return true;
+}
+
+static float getCut(const Graph &G, int S) {
+  float Ans = 0;
+  for (int Vertex = 1; Vertex <= G.getVertexNum(); Vertex++)
+    if (inSet(S, Vertex))
+      for (const auto &[V, W] : G.getEdgesAt(Vertex))
+        if (!inSet(S, V))
+          Ans += W;
+  return Ans;
+}
+
+static std::unique_ptr<std::set<int>> makeSet(const int S,
+                                              const int VertexNum) {
+  auto Ans = std::make_unique<std::set<int>>();
+  for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
+    if (inSet(S, Vertex)) {
+      Ans->insert(Vertex);
+    }
+  }
+  return Ans;
+}
+
+std::pair<float, std::unique_ptr<std::set<int>>> Graph::bruteForce() const {
+  using std::uint64_t;
+  float Ans = 1e-9;
+  std::unique_ptr<std::set<int>> AnsSet;
+  for (uint64_t S = 1; S < (1ll << VertexNum) - 1; S++) {
+    if (checkConnectivity(*this, S) && checkConnectivity(*this, ~S)) {
+      auto CandidateAns = getCut(*this, S);
+      if (Ans < CandidateAns) {
+        Ans = CandidateAns;
+        AnsSet = makeSet(S, VertexNum);
+      }
+    }
+  }
+  return std::make_pair(Ans, std::move(AnsSet));
 }
 
 void MSTGraph::addBiEdge(int U, int V, float W) {

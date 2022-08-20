@@ -1,5 +1,0 @@
-add_rules("mode.debug", "mode.release")
-target("bf")
-    set_kind("binary")
-    add_files("*.cpp")
-    add_deps("Heuristic")

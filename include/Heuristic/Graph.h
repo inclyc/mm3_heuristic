@@ -38,6 +38,8 @@ public:
   const std::vector<Edge> &operator[](int Vertex) const;
 
   const std::vector<Edge> &getEdgesAt(int Vertex) const;
+
+  std::pair<float, std::unique_ptr<std::set<int>>> bruteForce() const;
 };
 
 /**
