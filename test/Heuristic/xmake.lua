@@ -13,3 +13,12 @@ target("test_BruteForce")
     add_files("BruteForce.cpp")
     add_deps("Heuristic")
     add_packages("fmt")
+
+
+
+add_rules("mode.debug", "mode.release")
+target("bench_random")
+    set_kind("binary")
+    add_files("BenchRandom.cpp")
+    add_deps("Heuristic")
+    add_packages("fmt")
