@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from cProfile import label
 from matplotlib import pyplot as plt
 import sys
 import numpy as np
