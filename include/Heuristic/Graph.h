@@ -1,7 +1,7 @@
 #pragma once
-
 #include <istream>
 #include <memory>
+#include <set>
 #include <vector>
 
 namespace Heuristic {
@@ -36,6 +36,8 @@ public:
   friend std::istream &operator>>(std::istream &IS, Graph &G);
 
   const std::vector<Edge> &operator[](int Vertex) const;
+
+  const std::vector<Edge> &getEdgesAt(int Vertex) const;
 };
 
 /**
@@ -47,5 +49,26 @@ public:
  * @return std::unique_ptr<Graph>
  */
 std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum);
+
+struct MSTEdge {
+  int U, V;
+  float W;
+};
+
+class MSTGraph : public Graph {
+private:
+  std::unique_ptr<std::vector<MSTEdge>> Edges;
+
+public:
+  void addBiEdge(int U, int V, float W) override;
+  MSTGraph() : Graph() { Edges = std::make_unique<std::vector<MSTEdge>>(); }
+
+  /// @return (UsedEdges, UnusedEdges)
+  std::pair<std::unique_ptr<std::vector<MSTEdge>>,
+            std::unique_ptr<std::vector<MSTEdge>>>
+  calcMST();
+
+  std::pair<float, std::unique_ptr<std::set<int>>> solve();
+};
 
 } // namespace Heuristic
