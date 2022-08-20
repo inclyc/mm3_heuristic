@@ -12,7 +12,7 @@ def main():
         brute.append(a)
         approx.append(b)
 
-    x_axis = np.arange(len(brute))
+    x_axis = np.arange(15, 15 + len(brute))
     brute = np.array(brute)
     approx = np.array(approx)
     plt.plot(x_axis, approx / brute, label='Accuracy')
