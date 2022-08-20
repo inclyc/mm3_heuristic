@@ -3,20 +3,12 @@
 #include <memory>
 
 namespace DSU {
-DSU::DSU(int n) {
-  fa = std::make_unique<int[]>(static_cast<size_t>(n + 1));
-  for (int i = 0; i <= n; i++) {
-    fa[static_cast<size_t>(i)] = i;
+DSU::DSU(int VertexNum) {
+  Fa = std::make_unique<int[]>(VertexNum + 1);
+  for (int Vertex = 0; Vertex <= VertexNum; Vertex++) {
+    Fa[Vertex] = Vertex;
   }
 }
 
-int DSU::findFa(int u) {
-  int &f = fa[static_cast<size_t>(u)];
-  if (f == u) {
-    return f;
-  } else {
-    f = findFa(f);
-    return f;
-  }
-}
+int DSU::findFa(int U) { return Fa[U] == U ? U : Fa[U] = findFa(Fa[U]); }
 } // namespace DSU

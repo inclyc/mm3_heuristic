@@ -2,12 +2,12 @@
 namespace DSU {
 class DSU {
 private:
-  std::unique_ptr<int[]> fa;
+  std::unique_ptr<int[]> Fa;
   int findFa(int);
 
 public:
-  explicit DSU(int n);
-  void link(int u, int v) { fa[static_cast<size_t>(findFa(u))] = findFa(v); }
-  bool isConnected(int u, int v) { return findFa(u) == findFa(v); }
+  explicit DSU(int VertexNum);
+  void link(int U, int V) { Fa[static_cast<size_t>(findFa(U))] = findFa(V); }
+  bool isConnected(int U, int V) { return findFa(U) == findFa(V); }
 };
 } // namespace DSU
