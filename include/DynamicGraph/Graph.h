@@ -13,24 +13,24 @@ class Graph {
 private:
   int N;
   int M;
-  int blocks;
-  ll mapNode(int x, int y);
-  LinkCutTree lct[20];
+  int Blocks;
+  ll mapNode(int X, int Y);
+  LinkCutTree LCT[20];
   std::unordered_map<ll, int> LV;
-  void insertAsTree(int lv, int u, int v);
-  void insertAsGraph(int lv, int u, int v);
-  void deleteTree(int lv, int u, int v);
-  void deleteGraph(int lv, int u, int v);
-  bool findReplace(int lv, int u, int v);
+  void insertAsTree(int Level, int U, int V);
+  void insertAsGraph(int Level, int U, int V);
+  void deleteTree(int Level, int U, int V);
+  void deleteGraph(int Level, int U, int V);
+  bool findReplace(int Level, int U, int V);
 
 public:
-  int getBlockSize(int u);
+  int getBlockSize(int U);
   int getBlock();
   Graph(int);
   ~Graph();
-  int isConnected(int u, int v);
-  void link(int u, int v);
-  void cut(int u, int v);
+  int isConnected(int U, int V);
+  void link(int U, int V);
+  void cut(int U, int V);
 };
 } // namespace DynamicGraph
 

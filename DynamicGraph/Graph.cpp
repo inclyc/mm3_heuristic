@@ -10,95 +10,95 @@
 
 namespace DynamicGraph {
 
-ll Graph::mapNode(int x, int y) { return static_cast<ll>(x) * M + y; }
-void Graph::insertAsTree(int lv, int u, int v) {
-  LV[mapNode(u, v)] = LV[mapNode(v, u)] = lv;
-  lct[lv].ins(0, u, v);
+ll Graph::mapNode(int X, int Y) { return static_cast<ll>(X) * M + Y; }
+void Graph::insertAsTree(int Level, int U, int V) {
+  LV[mapNode(U, V)] = LV[mapNode(V, U)] = Level;
+  LCT[Level].ins(0, U, V);
 }
-void Graph::insertAsGraph(int lv, int u, int v) {
-  LV[mapNode(u, v)] = LV[mapNode(v, u)] = lv;
-  lct[lv].ins(1, u, v);
+void Graph::insertAsGraph(int Level, int U, int V) {
+  LV[mapNode(U, V)] = LV[mapNode(V, U)] = Level;
+  LCT[Level].ins(1, U, V);
 }
-void Graph::deleteTree(int lv, int u, int v) { lct[lv].del(0, u, v); }
-void Graph::deleteGraph(int lv, int u, int v) { lct[lv].del(1, u, v); }
-bool Graph::findReplace(int lv, int u, int v) {
-  lct[lv].access(u);
-  lct[lv].access(v);
-  if (lct[lv].siz[u] > lct[lv].siz[v])
-    std::swap(u, v);
-  int t = u, replacev = 0;
-  while ((u = lct[lv].get(u, 0))) {
-    std::unordered_set<int> &G = lct[lv].G[u][0];
+void Graph::deleteTree(int Level, int U, int V) { LCT[Level].del(0, U, V); }
+void Graph::deleteGraph(int Level, int U, int V) { LCT[Level].del(1, U, V); }
+bool Graph::findReplace(int Level, int U, int V) {
+  LCT[Level].access(U);
+  LCT[Level].access(V);
+  if (LCT[Level].Size[U] > LCT[Level].Size[V])
+    std::swap(U, V);
+  int T = U, ReplaceV = 0;
+  while ((U = LCT[Level].get(U, 0))) {
+    std::unordered_set<int> &G = LCT[Level].G[U][0];
     while (G.size()) {
-      int nxt = *G.begin();
-      deleteTree(lv, u, nxt);
-      insertAsTree(lv + 1, u, nxt);
-      lct[lv + 1].link(u, nxt);
+      int Next = *G.begin();
+      deleteTree(Level, U, Next);
+      insertAsTree(Level + 1, U, Next);
+      LCT[Level + 1].link(U, Next);
     }
   }
-  u = t;
-  while ((u = lct[lv].get(u, 1))) {
-    std::unordered_set<int> &G = lct[lv].G[u][1];
+  U = T;
+  while ((U = LCT[Level].get(U, 1))) {
+    std::unordered_set<int> &G = LCT[Level].G[U][1];
     while (G.size()) {
-      int nxt = *G.begin();
-      if (lct[lv].isconnected(u, nxt)) {
-        deleteGraph(lv, u, nxt);
-        insertAsGraph(lv + 1, u, nxt);
+      int Next = *G.begin();
+      if (LCT[Level].isconnected(U, Next)) {
+        deleteGraph(Level, U, Next);
+        insertAsGraph(Level + 1, U, Next);
       } else {
-        replacev = nxt;
-        deleteGraph(lv, u, replacev);
-        insertAsTree(lv, u, replacev);
-        for (int i = 0; i <= lv; ++i)
-          lct[i].link(u, replacev);
+        ReplaceV = Next;
+        deleteGraph(Level, U, ReplaceV);
+        insertAsTree(Level, U, ReplaceV);
+        for (int I = 0; I <= Level; ++I)
+          LCT[I].link(U, ReplaceV);
         break;
       }
     }
-    if (replacev)
+    if (ReplaceV)
       return 1;
   }
   return 0;
 }
-int Graph::isConnected(int u, int v) { return lct[0].isconnected(u, v); }
-int Graph::getBlockSize(int u) {
-  lct[0].access(u);
-  return lct[0].siz[u];
+int Graph::isConnected(int U, int V) { return LCT[0].isconnected(U, V); }
+int Graph::getBlockSize(int U) {
+  LCT[0].access(U);
+  return LCT[0].Size[U];
 }
-void Graph::link(int u, int v) {
-  if (!isConnected(u, v)) {
-    lct[0].link(u, v);
-    insertAsTree(0, u, v);
-    --blocks;
+void Graph::link(int U, int V) {
+  if (!isConnected(U, V)) {
+    LCT[0].link(U, V);
+    insertAsTree(0, U, V);
+    --Blocks;
   } else
-    insertAsGraph(0, u, v);
+    insertAsGraph(0, U, V);
 }
-void Graph::cut(int u, int v) {
-  int lv = LV[mapNode(u, v)];
-  if (lct[lv].G[u][0].count(v)) {
-    for (int i = 0; i <= lv; ++i)
-      lct[i].cut(u, v);
-    deleteTree(lv, u, v);
-    ++blocks;
-    for (int i = lv; i >= 0; --i)
-      if (findReplace(i, u, v)) {
-        --blocks;
+void Graph::cut(int U, int V) {
+  int Level = LV[mapNode(U, V)];
+  if (LCT[Level].G[U][0].count(V)) {
+    for (int I = 0; I <= Level; ++I)
+      LCT[I].cut(U, V);
+    deleteTree(Level, U, V);
+    ++Blocks;
+    for (int LevelIndex = Level; LevelIndex >= 0; --LevelIndex)
+      if (findReplace(LevelIndex, U, V)) {
+        --Blocks;
         break;
       }
   } else
-    deleteGraph(lv, u, v);
+    deleteGraph(Level, U, V);
 }
 Graph::~Graph() {
-  for (int i = 0; i < 20; ++i)
-    lct[i].free();
+  for (int I = 0; I < 20; ++I)
+    LCT[I].free();
 }
 
-Graph::Graph(int n) {
-  for (std::size_t i = 0; i < 20; ++i)
-    lct[i].init(static_cast<std::size_t>(n));
+Graph::Graph(int VertexNum) {
+  for (std::size_t I = 0; I < 20; ++I)
+    LCT[I].init(static_cast<std::size_t>(VertexNum));
   LV.clear();
-  blocks = n;
-  N = n;
+  Blocks = VertexNum;
+  N = VertexNum;
   M = 1000000000 + 7;
 }
 
-int Graph::getBlock() { return blocks; }
+int Graph::getBlock() { return Blocks; }
 } // namespace DynamicGraph

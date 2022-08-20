@@ -15,39 +15,39 @@
 namespace DynamicGraph {
 struct LinkCutTree {
   std::unordered_set<int> G[LCT_MAXN][2];
-  int fa[LCT_MAXN];
-  int ch[LCT_MAXN][2];
-  int flp[LCT_MAXN];
-  int sta[LCT_MAXN];
-  int tp;
-  int siz[LCT_MAXN];
-  int sizv[LCT_MAXN];
-  int tag[LCT_MAXN][2];
+  int FatherVertex[LCT_MAXN];
+  int ChildVertex[LCT_MAXN][2];
+  int FlippedFlag[LCT_MAXN];
+  int Stack[LCT_MAXN];
+  int StackTop;
+  int Size[LCT_MAXN];
+  int SizeValue[LCT_MAXN];
+  int Tag[LCT_MAXN][2];
 
-  List chv[2];
+  List ChildV[2];
 
   void init(std::size_t);
   void free();
 
   void linkv(int, int);
-  void cutv(int u, int v);
-  void rev(int u);
-  void pu(int u);
-  void pd(int u);
-  int sf(int u);
-  bool isrt(int u);
-  void rot(int u);
-  void splay(int u);
-  void access(int u);
-  void makert(int u);
-  void join(int u, int v);
-  int findrt(int u);
-  void link(int u, int v);
-  void cut(int u, int v);
-  int get(int u, int f);
-  bool isconnected(int u, int v);
-  void ins(int f, int u, int v);
-  void del(int f, int u, int v);
+  void cutv(int, int);
+  void rev(int);
+  void pu(int);
+  void pd(int);
+  int sf(int);
+  bool isrt(int);
+  void rot(int);
+  void splay(int);
+  void access(int);
+  void makert(int);
+  void join(int, int);
+  int findrt(int);
+  void link(int, int);
+  void cut(int, int);
+  int get(int, int);
+  bool isconnected(int, int);
+  void ins(int, int, int);
+  void del(int, int, int);
 };
 } // namespace DynamicGraph
 

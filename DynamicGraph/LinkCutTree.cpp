@@ -4,183 +4,186 @@
 
 namespace DynamicGraph {
 
-#define l(u) ch[u][0]
-#define r(u) ch[u][1]
+#define l(u) ChildVertex[u][0]
+#define r(u) ChildVertex[u][1]
 
-void LinkCutTree::init(std::size_t n) {
-  for (std::size_t i = 0; i < 2; ++i) {
-    chv[i].init(n);
-    for (std::size_t u = 1; u <= n; ++u)
-      G[u][i].clear();
+void LinkCutTree::init(std::size_t VertexNum) {
+  for (std::size_t I = 0; I < 2; ++I) {
+    ChildV[I].init(VertexNum);
+    for (std::size_t U = 1; U <= VertexNum; ++U)
+      G[U][I].clear();
   }
-  tp = 0;
-  for (std::size_t u = 0; u <= n; ++u) {
-    sizv[u] = 0;
-    sta[u] = 0;
-    fa[u] = l(u) = r(u) = tag[u][0] = tag[u][1] = flp[u] = sizv[u] = 0;
-    siz[u] = 1;
+  StackTop = 0;
+  for (std::size_t U = 0; U <= VertexNum; ++U) {
+    SizeValue[U] = 0;
+    Stack[U] = 0;
+    FatherVertex[U] = l(U) = r(U) = Tag[U][0] = Tag[U][1] = FlippedFlag[U] =
+        SizeValue[U] = 0;
+    Size[U] = 1;
   }
-  siz[0] = 0;
+  Size[0] = 0;
 }
 
 void LinkCutTree::free() {
-  chv[0].free();
-  chv[1].free();
+  ChildV[0].free();
+  ChildV[1].free();
 }
 
-void LinkCutTree::linkv(int u, int v) {
-  if (!u || !v)
+void LinkCutTree::linkv(int U, int V) {
+  if (!U || !V)
     return;
-  sizv[u] += siz[v];
-  for (int i = 0; i < 2; ++i)
-    if (tag[v][i])
-      chv[i].link(u, v);
+  SizeValue[U] += Size[V];
+  for (int I = 0; I < 2; ++I)
+    if (Tag[V][I])
+      ChildV[I].link(U, V);
 }
-void LinkCutTree::cutv(int u, int v) {
-  if (!u || !v)
+void LinkCutTree::cutv(int U, int V) {
+  if (!U || !V)
     return;
-  sizv[u] -= siz[v];
-  for (int i = 0; i < 2; ++i)
-    if (tag[v][i])
-      chv[i].cut(u, v);
+  SizeValue[U] -= Size[V];
+  for (int I = 0; I < 2; ++I)
+    if (Tag[V][I])
+      ChildV[I].cut(U, V);
 }
-void LinkCutTree::rev(int u) {
-  flp[u] ^= 1;
-  std::swap(l(u), r(u));
+void LinkCutTree::rev(int U) {
+  FlippedFlag[U] ^= 1;
+  std::swap(l(U), r(U));
 }
 
-void LinkCutTree::pu(int u) {
-  if (!u)
+void LinkCutTree::pu(int U) {
+  if (!U)
     return;
-  for (int i = 0; i < 2; ++i)
-    tag[u][i] =
-        tag[l(u)][i] | tag[r(u)][i] | !G[u][i].empty() | !chv[i].empty(u);
-  siz[u] = siz[l(u)] + siz[r(u)] + 1 + sizv[u];
+  for (int I = 0; I < 2; ++I)
+    Tag[U][I] =
+        Tag[l(U)][I] | Tag[r(U)][I] | !G[U][I].empty() | !ChildV[I].empty(U);
+  Size[U] = Size[l(U)] + Size[r(U)] + 1 + SizeValue[U];
 }
 
-void LinkCutTree::pd(int u) {
-  if (flp[u]) {
-    rev(l(u));
-    rev(r(u));
-    flp[u] = 0;
+void LinkCutTree::pd(int U) {
+  if (FlippedFlag[U]) {
+    rev(l(U));
+    rev(r(U));
+    FlippedFlag[U] = 0;
   }
 }
 
-int LinkCutTree::sf(int u) { return u == r(fa[u]); }
+int LinkCutTree::sf(int U) { return U == r(FatherVertex[U]); }
 
-bool LinkCutTree::isrt(int u) { return u != l(fa[u]) && u != r(fa[u]); }
+bool LinkCutTree::isrt(int U) {
+  return U != l(FatherVertex[U]) && U != r(FatherVertex[U]);
+}
 
-void LinkCutTree::rot(int u) {
-  int v = fa[u], f = sf(u);
-  bool flag = isrt(v);
-  if (!flag)
-    ch[fa[v]][sf(v)] = u;
-  else if (fa[v])
-    cutv(fa[v], v);
-  ch[v][f] = ch[u][f ^ 1];
-  fa[ch[v][f]] = v;
-  fa[u] = fa[v];
-  ch[u][f ^ 1] = v;
-  fa[v] = u;
-  pu(v);
-  if (flag) {
-    pu(u);
-    linkv(fa[u], u);
+void LinkCutTree::rot(int U) {
+  int V = FatherVertex[U], F = sf(U);
+  bool Flag = isrt(V);
+  if (!Flag)
+    ChildVertex[FatherVertex[V]][sf(V)] = U;
+  else if (FatherVertex[V])
+    cutv(FatherVertex[V], V);
+  ChildVertex[V][F] = ChildVertex[U][F ^ 1];
+  FatherVertex[ChildVertex[V][F]] = V;
+  FatherVertex[U] = FatherVertex[V];
+  ChildVertex[U][F ^ 1] = V;
+  FatherVertex[V] = U;
+  pu(V);
+  if (Flag) {
+    pu(U);
+    linkv(FatherVertex[U], U);
   }
 }
 
-void LinkCutTree::splay(int u) {
-  sta[tp = 0] = u;
-  for (int v = u; !isrt(v); v = fa[v])
-    sta[++tp] = fa[v];
-  for (; ~tp; pd(sta[tp--]))
+void LinkCutTree::splay(int U) {
+  Stack[StackTop = 0] = U;
+  for (int V = U; !isrt(V); V = FatherVertex[V])
+    Stack[++StackTop] = FatherVertex[V];
+  for (; ~StackTop; pd(Stack[StackTop--]))
     ;
-  for (; !isrt(u); rot(u))
-    if (!isrt(fa[u]) && sf(fa[u]) == sf(u))
-      rot(fa[u]);
+  for (; !isrt(U); rot(U))
+    if (!isrt(FatherVertex[U]) && sf(FatherVertex[U]) == sf(U))
+      rot(FatherVertex[U]);
 }
 
-void LinkCutTree::access(int u) {
-  int w = u;
-  for (int v = 0; u; u = fa[v = u]) {
-    splay(u);
-    linkv(u, r(u));
-    cutv(u, v);
-    r(u) = v;
-    pu(u);
+void LinkCutTree::access(int U) {
+  int W = U;
+  for (int V = 0; U; U = FatherVertex[V = U]) {
+    splay(U);
+    linkv(U, r(U));
+    cutv(U, V);
+    r(U) = V;
+    pu(U);
   }
 
-  splay(w);
+  splay(W);
 }
-void LinkCutTree::makert(int u) {
-  access(u);
-  rev(u);
-}
-
-void LinkCutTree::join(int u, int v) {
-  makert(u);
-  access(v);
+void LinkCutTree::makert(int U) {
+  access(U);
+  rev(U);
 }
 
-int LinkCutTree::findrt(int u) {
-  access(u);
-  for (; l(u); pd(u), u = l(u))
+void LinkCutTree::join(int U, int V) {
+  makert(U);
+  access(V);
+}
+
+int LinkCutTree::findrt(int U) {
+  access(U);
+  for (; l(U); pd(U), U = l(U))
     ;
-  splay(u);
-  return u;
+  splay(U);
+  return U;
 }
 
-void LinkCutTree::link(int u, int v) {
-  makert(u);
-  if (findrt(v) == u)
+void LinkCutTree::link(int U, int V) {
+  makert(U);
+  if (findrt(V) == U)
     return;
-  fa[u] = v;
-  linkv(v, u);
-  pu(v);
-  access(v);
+  FatherVertex[U] = V;
+  linkv(V, U);
+  pu(V);
+  access(V);
 }
 
-void LinkCutTree::cut(int u, int v) {
-  join(u, v);
-  if (l(v) != u || r(u))
+void LinkCutTree::cut(int U, int V) {
+  join(U, V);
+  if (l(V) != U || r(U))
     return;
-  fa[u] = l(v) = 0;
-  pu(v);
+  FatherVertex[U] = l(V) = 0;
+  pu(V);
 }
 
-int LinkCutTree::get(int u, int f) {
-  access(u);
-  if (!tag[u][f])
+int LinkCutTree::get(int U, int F) {
+  access(U);
+  if (!Tag[U][F])
     return 0;
-  while (G[u][f].empty()) {
-    if (tag[l(u)][f])
-      u = l(u);
-    else if (tag[r(u)][f])
-      u = r(u);
+  while (G[U][F].empty()) {
+    if (Tag[l(U)][F])
+      U = l(U);
+    else if (Tag[r(U)][F])
+      U = r(U);
     else
-      u = chv[f].first(u);
+      U = ChildV[F].first(U);
   }
-  return u;
+  return U;
 }
-bool LinkCutTree::isconnected(int u, int v) { return findrt(u) == findrt(v); }
-void LinkCutTree::ins(int f, int u, int v) {
-  if (G[u][f].size() == 0)
-    access(u);
-  G[u][f].insert(v);
-  pu(u);
-  if (G[v][f].size() == 0)
-    access(v);
-  G[v][f].insert(u);
-  pu(v);
+bool LinkCutTree::isconnected(int U, int V) { return findrt(U) == findrt(V); }
+void LinkCutTree::ins(int F, int U, int V) {
+  if (G[U][F].size() == 0)
+    access(U);
+  G[U][F].insert(V);
+  pu(U);
+  if (G[V][F].size() == 0)
+    access(V);
+  G[V][F].insert(U);
+  pu(V);
 }
-void LinkCutTree::del(int f, int u, int v) {
-  if (G[u][f].size() == 1)
-    access(u);
-  G[u][f].erase(v);
-  pu(u);
-  if (G[v][f].size() == 1)
-    access(v);
-  G[v][f].erase(u);
-  pu(v);
+void LinkCutTree::del(int F, int U, int V) {
+  if (G[U][F].size() == 1)
+    access(U);
+  G[U][F].erase(V);
+  pu(U);
+  if (G[V][F].size() == 1)
+    access(V);
+  G[V][F].erase(U);
+  pu(V);
 }
 } // namespace DynamicGraph
