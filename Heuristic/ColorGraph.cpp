@@ -25,7 +25,7 @@ int ColorGraph::getArticulationPoints() {
     IsVisited[U] = true;
     LowestReach[U] = DfsNumber[U] = Count++;
     int Child = 0;
-    for (const auto &E : Edges[U]) {
+    for (const auto &E : EdgesOfNode[U]) {
       int V = E.V;
       if (!IsVisited[V]) {
         Child++;
@@ -70,7 +70,7 @@ void ColorGraph::colorArticulationPoint(int A) {
   DFS = [&](int U) {
     IsVisited[U] = true;
     Color[U] = N;
-    for (const auto &E : Edges[U]) {
+    for (const auto &E : EdgesOfNode[U]) {
       int V = E.V;
       if (!IsVisited[V]) {
         // i.e. we haven't assigned a color to v
@@ -79,7 +79,7 @@ void ColorGraph::colorArticulationPoint(int A) {
     }
   };
 
-  for (const auto &[U, _] : Edges[A]) {
+  for (const auto &[U, _] : EdgesOfNode[A]) {
     if (!IsVisited[U]) {
       N++;
       DFS(U);
@@ -106,7 +106,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   std::function<void(int)> DFS;
   DFS = [&](int U) {
     IsVisited[U] = true;
-    for (const auto &[V, _] : Edges[U]) {
+    for (const auto &[V, _] : EdgesOfNode[U]) {
       if (!IsVisited[V] && Color[V] == WorkColor && !CurrentSet->contains(V)) {
         DFS(V);
       }
@@ -130,7 +130,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
   };
 
   for (const auto &U : *CurrentSet) {
-    for (const auto E : Edges[U]) {
+    for (const auto E : EdgesOfNode[U]) {
       auto [V, W] = E;
       if (!CurrentSet->contains(V) && Color[V] == WorkColor) {
         PQ.push(E);
@@ -158,7 +158,7 @@ ColorGraph::solveArticulation(int A, int WorkColor) {
     // Not inner edges, this edge points to a new vertex U
     // insert U to current set and update current answer
     CurrentSet->insert(U);
-    for (const auto E : Edges[U]) {
+    for (const auto E : EdgesOfNode[U]) {
       const auto &[V, W] = E;
       if (CurrentSet->contains(V)) {
         CurrentAns -= W;
@@ -195,7 +195,7 @@ ColorGraph::solveArticulation(int A) {
   int AnsWorkColor = 0;
   // At vertex u, map color -> max cut
   std::map<int, float> ArticulationCut;
-  for (const auto &E : Edges[A]) {
+  for (const auto &E : EdgesOfNode[A]) {
     if (E.V == A)
       continue; // self loops
     ColorSet->insert(Color[E.V]);
@@ -271,7 +271,7 @@ ColorGraph::constructFinalAnswer(int A, int WorkColor,
     if (Color[U] == WorkColor && !Chosen->contains(U)) {
       AnsSet->insert(U);
     }
-    for (const auto &[V, _] : Edges[U]) {
+    for (const auto &[V, _] : EdgesOfNode[U]) {
       if (!IsVisited[V] && Color[V] == WorkColor) {
         DFS(V);
       }

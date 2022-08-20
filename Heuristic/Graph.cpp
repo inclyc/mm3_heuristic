@@ -6,7 +6,7 @@
 namespace Heuristic {
 void Graph::addEdge(int U, int V, float W) {
   EdgeNum++;
-  Edges[U].push_back(Edge{.V = V, .W = W});
+  EdgesOfNode[U].push_back(Edge{.V = V, .W = W});
 }
 
 std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
@@ -39,7 +39,7 @@ std::unique_ptr<Graph> randomBiGraph(int VertexNum, int EdgeNum) {
 
 void Graph::setVertexNum(int VertexNum) {
   this->VertexNum = VertexNum;
-  Edges = std::make_unique<std::vector<Edge>[]>(VertexNum + 1);
+  EdgesOfNode = std::make_unique<std::vector<Edge>[]>(VertexNum + 1);
 }
 
 std::istream &operator>>(std::istream &IS, Graph &G) {
@@ -56,7 +56,7 @@ std::istream &operator>>(std::istream &IS, Graph &G) {
 }
 
 const std::vector<Edge> &Graph::operator[](int Vertex) const {
-  return Edges[Vertex];
+  return EdgesOfNode[Vertex];
 }
 
 } // namespace Heuristic

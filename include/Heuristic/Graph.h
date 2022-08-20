@@ -15,12 +15,12 @@ struct Edge {
 
 class Graph {
 protected:
-  std::unique_ptr<std::vector<Edge>[]> Edges;
+  std::unique_ptr<std::vector<Edge>[]> EdgesOfNode;
   int VertexNum, EdgeNum;
 
 public:
   Graph(int V) {
-    Edges = std::make_unique<std::vector<Edge>[]>(V + 1);
+    EdgesOfNode = std::make_unique<std::vector<Edge>[]>(V + 1);
     VertexNum = V;
   }
 
@@ -28,7 +28,7 @@ public:
   virtual void setVertexNum(int VertexNum);
   int getVertexNum() const { return VertexNum; }
   void addEdge(int U, int V, float W);
-  void addBiEdge(int U, int V, float W) {
+  virtual void addBiEdge(int U, int V, float W) {
     addEdge(U, V, W);
     addEdge(V, U, W);
   }
