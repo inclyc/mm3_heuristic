@@ -1,4 +1,3 @@
-#include "Heuristic/ColorGraph.h"
 #include "Heuristic/Graph.h"
 #include <fmt/core.h>
 #include <iostream>
@@ -7,12 +6,10 @@ int main() {
   auto Graph = std::make_unique<Heuristic::MSTGraph>();
   std::cin >> *Graph;
   auto [Ans, AnsSet] = Graph->solve();
-  std::cout << fmt::format("Max cut: {:.2f}", Ans) << std::endl;
-  std::cout << fmt::format("Number of vertexes in answer set: {}",
-                           AnsSet->size())
-            << std::endl;
+  fmt::print("Max cut: {:.2f}\n", Ans);
+  fmt::print("Number of vertexes in the answer set: {}\n", AnsSet->size());
   for (const auto &U : *AnsSet) {
-    std::cout << U << " ";
+    fmt::print("{} ", U);
   }
-  std::cout << std::endl;
+  fmt::print("\n");
 }
