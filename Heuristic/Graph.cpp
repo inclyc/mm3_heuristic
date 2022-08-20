@@ -83,7 +83,7 @@ static bool checkConnectivity(const Graph &G, const int S) {
     }
   }
   if (BeginVertex == -1)
-    return false; // 舍去空集的情况
+    return false; // Ignore empty set
   auto Visited = std::make_unique<bool[]>(VertexNum);
   for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
     Visited[Vertex] = false;
