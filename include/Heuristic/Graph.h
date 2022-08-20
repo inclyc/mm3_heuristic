@@ -3,6 +3,7 @@
 #include <cassert>
 #include <istream>
 #include <memory>
+#include <ostream>
 #include <set>
 #include <vector>
 namespace Heuristic {
@@ -23,13 +24,18 @@ public:
   Graph(int V) {
     EdgesOfNode = std::make_unique<std::vector<Edge>[]>(V + 1);
     VertexNum = V;
+    EdgeNum = 0;
   }
 
-  Graph() {}
+  Graph() {
+    EdgeNum = 0;
+    VertexNum = 0;
+  }
   virtual void setVertexNum(int VertexNum);
   int getVertexNum() const { return VertexNum; }
   void addEdge(int U, int V, float W);
   virtual void addBiEdge(int U, int V, float W) {
+    EdgeNum++;
     addEdge(U, V, W);
     addEdge(V, U, W);
   }
@@ -41,6 +47,8 @@ public:
   const std::vector<Edge> &getEdgesAt(int Vertex) const;
 
   std::pair<float, std::unique_ptr<std::set<int>>> bruteForce() const;
+
+  friend std::ostream &operator<<(std::ostream &OS, const Graph &G);
 };
 
 template <class T>
@@ -64,8 +72,12 @@ std::unique_ptr<T> randomBiGraph(int VertexNum, int EdgeNum) {
   // generates [VertexNum, EdgeNum) edges here
   for (int I = VertexNum; I < EdgeNum; I++) {
     // U, V belongs to [1, VertexNum + 1)
-    int U = randRange(1, VertexNum + 1);
-    int V = randRange(1, VertexNum + 1);
+    int U = 0, V = 0;
+    while (U == V) {
+      // no self loops
+      U = randRange(1, VertexNum + 1);
+      V = randRange(1, VertexNum + 1);
+    }
     Ans->addBiEdge(U, V, randFloat());
   }
 

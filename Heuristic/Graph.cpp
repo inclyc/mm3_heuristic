@@ -3,6 +3,7 @@
 #include "Heuristic/DisjointSet.h"
 #include <algorithm>
 #include <bitset>
+#include <cassert>
 #include <cstdint>
 #include <memory>
 #include <sys/types.h>
@@ -10,7 +11,6 @@
 
 namespace Heuristic {
 void Graph::addEdge(int U, int V, float W) {
-  EdgeNum++;
   EdgesOfNode[U].push_back(Edge{.V = V, .W = W});
 }
 
@@ -31,6 +31,22 @@ std::istream &operator>>(std::istream &IS, Graph &G) {
     G.addBiEdge(U, V, W);
   }
   return IS;
+}
+
+std::ostream &operator<<(std::ostream &OS, const Graph &G) {
+  OS << G.VertexNum << " " << G.EdgeNum << std::endl;
+  int EdgeCounter = 0;
+  for (int Vertex = 1; Vertex <= G.VertexNum; Vertex++) {
+    for (const auto &E : G.EdgesOfNode[Vertex]) {
+      assert(Vertex != E.V);
+      if (Vertex < E.V) {
+        OS << Vertex << " " << E.V << std::endl;
+        EdgeCounter++;
+      }
+    }
+  }
+  assert(EdgeCounter == G.EdgeNum);
+  return OS;
 }
 
 const std::vector<Edge> &Graph::operator[](int Vertex) const {
@@ -118,6 +134,7 @@ std::pair<float, std::unique_ptr<std::set<int>>> Graph::bruteForce() const {
 void MSTGraph::addBiEdge(int U, int V, float W) {
   Graph::addBiEdge(U, V, W);
   Edges->push_back(MSTEdge{U, V, W});
+  EdgeNum += 1;
 }
 
 std::pair<std::unique_ptr<std::vector<MSTEdge>>,

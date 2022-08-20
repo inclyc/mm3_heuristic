@@ -14,6 +14,12 @@ target("test_BruteForce")
     add_deps("Heuristic")
     add_packages("fmt")
 
+add_rules("mode.debug", "mode.release")
+target("test_GraphDump")
+    set_kind("binary")
+    add_files("GraphDump.cpp")
+    add_deps("Heuristic")
+    add_packages("fmt")
 
 
 add_rules("mode.debug", "mode.release")
