@@ -70,7 +70,7 @@ std::unique_ptr<T> randomBiGraph(int VertexNum, int EdgeNum) {
 
   // now all vertexes are connected (as a tree)
   // generates [VertexNum, EdgeNum) edges here
-  for (int I = VertexNum; I < EdgeNum; I++) {
+  for (int I = VertexNum; I <= EdgeNum; I++) {
     // U, V belongs to [1, VertexNum + 1)
     int U = 0, V = 0;
     while (U == V) {

@@ -41,7 +41,7 @@ std::ostream &operator<<(std::ostream &OS, const Graph &G) {
     for (const auto &E : G.EdgesOfNode[Vertex]) {
       assert(Vertex != E.V);
       if (Vertex < E.V) {
-        OS << Vertex << " " << E.V << std::endl;
+        OS << Vertex << " " << E.V << " " << E.W << std::endl;
         EdgeCounter++;
       }
     }
