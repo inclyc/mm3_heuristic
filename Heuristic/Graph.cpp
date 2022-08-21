@@ -5,6 +5,7 @@
 #include <bitset>
 #include <cassert>
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <sys/types.h>
 #include <utility>
