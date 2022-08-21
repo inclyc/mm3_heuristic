@@ -120,7 +120,7 @@ std::pair<float, std::unique_ptr<std::set<int>>> Graph::bruteForce() const {
   using std::uint64_t;
   float Ans = 1e-9;
   std::unique_ptr<std::set<int>> AnsSet;
-  for (uint64_t S = 1; S < (1ll << VertexNum) - 1; S++) {
+  for (uint64_t S = 1; S < (1ull << VertexNum) - 1; S++) {
     if (checkConnectivity(*this, S) && checkConnectivity(*this, ~S)) {
       auto CandidateAns = getCut(*this, S);
       if (Ans < CandidateAns) {
