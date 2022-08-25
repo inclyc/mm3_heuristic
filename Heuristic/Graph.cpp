@@ -5,6 +5,7 @@
 #include <bitset>
 #include <cassert>
 #include <cstdint>
+#include <fmt/core.h>
 #include <functional>
 #include <memory>
 #include <sys/types.h>
@@ -56,6 +57,15 @@ const std::vector<Edge> &Graph::operator[](int Vertex) const {
 
 const std::vector<Edge> &Graph::getEdgesAt(int Vertex) const {
   return EdgesOfNode[Vertex];
+}
+
+void Graph::printSetByEdge(const std::set<int> &S) const {
+  for (int U = 1; U <= VertexNum; U++) {
+    for (const auto &[V, W] : EdgesOfNode[U]) {
+      if (S.contains(U) && !S.contains(V))
+        fmt::print("{} {} {}\n", U, V, W);
+    }
+  }
 }
 
 static constexpr bool inSet(int S, int Vertex) {

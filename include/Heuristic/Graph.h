@@ -46,6 +46,8 @@ public:
 
   const std::vector<Edge> &getEdgesAt(int Vertex) const;
 
+  void printSetByEdge(const std::set<int> &S) const;
+
   std::pair<float, std::unique_ptr<std::set<int>>> bruteForce() const;
 
   friend std::ostream &operator<<(std::ostream &OS, const Graph &G);

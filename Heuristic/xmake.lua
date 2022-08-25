@@ -1,6 +1,8 @@
+add_requires("fmt", {system = true})
 add_rules("mode.debug", "mode.release")
 target("Heuristic")
     set_kind("shared")
     add_files("*.cpp")
     add_deps("Random")
     add_deps("DynamicGraph")
+    add_packages("fmt")
