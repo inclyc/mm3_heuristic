@@ -180,7 +180,6 @@ std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve(int TestNum) {
   std::shared_ptr<DynamicGraph::Graph> DG, AnsDG;
   std::sort(Edges->begin(), Edges->end(),
             [](const MSTEdge &E1, const MSTEdge &E2) { return E1.W < E2.W; });
-  std::srand(time(0));
   for (int K = 0; K < TestNum; K++) {
     int RandNum = Edges->size() * K / TestNum;
     std::random_shuffle(Edges->begin(), Edges->begin() + RandNum);
