@@ -1,0 +1,16 @@
+name: Build
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: xmake-io/github-action-setup-xmake@v1
+      with:
+        xmake-version: latest
+    - name: Build
+      run: xmake -vv -y
