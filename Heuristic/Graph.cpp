@@ -150,8 +150,7 @@ void MSTGraph::addBiEdge(int U, int V, float W) {
 
 std::pair<std::unique_ptr<std::vector<MSTEdge>>,
           std::unique_ptr<std::vector<MSTEdge>>>
-MSTGraph::spanningTree(int K) {
-  std::random_shuffle(Edges->begin(), Edges->begin() + K);
+MSTGraph::spanningTree() {
   auto DS = std::make_unique<DisjointSet>(VertexNum);
   auto UnusedEdges = std::make_unique<std::vector<MSTEdge>>();
   auto UsedEdges = std::make_unique<std::vector<MSTEdge>>();
@@ -184,8 +183,9 @@ std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve(int TestNum) {
   std::srand(time(0));
   for (int K = 0; K < TestNum; K++) {
     int RandNum = Edges->size() * K / TestNum;
+    std::random_shuffle(Edges->begin(), Edges->begin() + RandNum);
     DG = std::make_shared<DynamicGraph::Graph>(VertexNum);
-    std::tie(UsedEdges, UnusedEdges) = spanningTree(RandNum);
+    std::tie(UsedEdges, UnusedEdges) = spanningTree();
     for (const auto &[U, V, _] : *UsedEdges) {
       DG->link(U, V);
     }
