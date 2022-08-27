@@ -150,9 +150,8 @@ void MSTGraph::addBiEdge(int U, int V, float W) {
 
 std::pair<std::unique_ptr<std::vector<MSTEdge>>,
           std::unique_ptr<std::vector<MSTEdge>>>
-MSTGraph::calcMST() {
-  std::sort(Edges->begin(), Edges->end(),
-            [](const MSTEdge &E1, const MSTEdge &E2) { return E1.W < E2.W; });
+MSTGraph::calcMST(int K) {
+  std::random_shuffle(Edges->begin(), Edges->begin() + K);
   auto DS = std::make_unique<DisjointSet>(VertexNum);
   auto UnusedEdges = std::make_unique<std::vector<MSTEdge>>();
   auto UsedEdges = std::make_unique<std::vector<MSTEdge>>();
@@ -168,7 +167,7 @@ MSTGraph::calcMST() {
   return std::make_pair(std::move(UsedEdges), std::move(UnusedEdges));
 }
 
-std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve() {
+std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve(int TestNum) {
   float Ans = -1e8;
   auto AnsSet = std::make_unique<std::set<int>>();
   auto WorkSet = std::make_unique<std::set<int>>();
@@ -179,35 +178,39 @@ std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve() {
     WorkSet->insert(Vertex);
   }
   std::unique_ptr<std::vector<MSTEdge>> UsedEdges, UnusedEdges;
-  std::tie(UsedEdges, UnusedEdges) = calcMST();
+  std::shared_ptr<DynamicGraph::Graph> DG, AnsDG;
+  std::sort(Edges->begin(), Edges->end(),
+            [](const MSTEdge &E1, const MSTEdge &E2) { return E1.W < E2.W; });
+  std::srand(time(0));
+  for (int K = 0; K < TestNum; K++) {
+    int RandNum = Edges->size() * K / TestNum;
+    DG = std::make_shared<DynamicGraph::Graph>(VertexNum);
+    std::tie(UsedEdges, UnusedEdges) = calcMST(RandNum);
+    for (const auto &[U, V, _] : *UsedEdges) {
+      DG->link(U, V);
+    }
 
-  auto DG = std::make_unique<DynamicGraph::Graph>(VertexNum);
-  for (const auto &[U, V, _] : *UsedEdges) {
-    DG->link(U, V);
-  }
-
-  for (const auto &E : *UsedEdges) {
-    auto &[U, V, W] = E;
-    DG->cut(U, V);
-    float CurrentAns = W;
-    for (const auto &[U_, V_, W_] : *UnusedEdges) {
-      if (!DG->isConnected(U_, V_)) {
-        CurrentAns += W_;
+    for (const auto &E : *UsedEdges) {
+      auto &[U, V, W] = E;
+      DG->cut(U, V);
+      float CurrentAns = W;
+      for (const auto &[U_, V_, W_] : *UnusedEdges) {
+        if (!DG->isConnected(U_, V_)) {
+          CurrentAns += W_;
+        }
       }
+      if (CurrentAns > Ans) {
+        Ans = CurrentAns;
+        CutEdge = E;
+        AnsDG = DG;
+      }
+      DG->link(U, V);
     }
-    if (CurrentAns > Ans) {
-      Ans = CurrentAns;
-      CutEdge = E;
-    }
-    DG->link(U, V);
   }
-
-  DG->cut(CutEdge.U, CutEdge.V);
-
   // construct answer set
-
+  AnsDG->cut(CutEdge.U, CutEdge.V);
   for (int Vertex = 1; Vertex <= VertexNum; Vertex++) {
-    if (DG->isConnected(Vertex, 1)) {
+    if (AnsDG->isConnected(Vertex, 1)) {
       AnsSet->insert(Vertex);
     }
   }
