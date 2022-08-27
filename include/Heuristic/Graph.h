@@ -105,7 +105,7 @@ public:
   /// @return (UsedEdges, UnusedEdges)
   std::pair<std::unique_ptr<std::vector<MSTEdge>>,
             std::unique_ptr<std::vector<MSTEdge>>>
-  calcMST(int K);
+  spanningTree(int K);
 
   std::pair<float, std::unique_ptr<std::set<int>>> solve(int TestNum);
 };
