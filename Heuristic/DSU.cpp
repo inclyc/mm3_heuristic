@@ -1,5 +1,4 @@
 #include "Heuristic/DisjointSet.h"
-#include <cstddef>
 #include <memory>
 
 namespace Heuristic {

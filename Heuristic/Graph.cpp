@@ -2,7 +2,6 @@
 #include "DynamicGraph/Graph.h"
 #include "Heuristic/DisjointSet.h"
 #include <algorithm>
-#include <bitset>
 #include <cassert>
 #include <cstdint>
 #include <fmt/core.h>
