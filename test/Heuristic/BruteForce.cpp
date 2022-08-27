@@ -2,6 +2,7 @@
 #include <fmt/core.h>
 #include <iostream>
 #include <memory>
+
 int main() {
   auto Graph = std::make_unique<Heuristic::MSTGraph>();
   std::cin >> *Graph;
