@@ -1,4 +1,4 @@
-add_requires("fmt", {system = true})
+add_requires("fmt")
 
 add_rules("mode.debug", "mode.release")
 target("test_MST")
