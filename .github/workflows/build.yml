@@ -9,8 +9,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - name: Apt Dependency
+      run: |
+        sudo apt install libgomp1 libomp-dev
+    - name: Install LLVM and Clang
+      uses: KyleMayes/install-llvm-action@v1
+      with:
+        version: "14.0"
     - uses: xmake-io/github-action-setup-xmake@v1
       with:
         xmake-version: latest
-    - name: Build
+    - name: GCC Build
       run: xmake -vv -y
+    - name: Clang Build
+      run: |
+        xmake f --toolchain=clang -c -y
+        xmake -vv -y
