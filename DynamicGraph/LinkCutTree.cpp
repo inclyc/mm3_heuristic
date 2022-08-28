@@ -13,7 +13,6 @@ void LinkCutTree::init(std::size_t VertexNum) {
     for (std::size_t U = 1; U <= VertexNum; ++U)
       G[U][I].clear();
   }
-  StackTop = 0;
   for (std::size_t U = 0; U <= VertexNum; ++U) {
     SizeValue[U] = 0;
     Stack[U] = 0;
@@ -93,10 +92,11 @@ void LinkCutTree::rot(int U) {
 }
 
 void LinkCutTree::splay(int U) {
-  Stack[StackTop = 0] = U;
+  int StackTop = 0;
+  Stack[StackTop] = U;
   for (int V = U; !isrt(V); V = FatherVertex[V])
     Stack[++StackTop] = FatherVertex[V];
-  for (; ~StackTop; pd(Stack[StackTop--]))
+  for (; StackTop >= 0; pd(Stack[StackTop--]))
     ;
   for (; !isrt(U); rot(U))
     if (!isrt(FatherVertex[U]) && sf(FatherVertex[U]) == sf(U))

@@ -149,11 +149,11 @@ void MSTGraph::addBiEdge(int U, int V, float W) {
 
 std::pair<std::unique_ptr<std::vector<MSTEdge>>,
           std::unique_ptr<std::vector<MSTEdge>>>
-MSTGraph::spanningTree() {
+MSTGraph::spanningTree(const std::vector<MSTEdge> &LocalEdges) {
   auto DS = std::make_unique<DisjointSet>(VertexNum);
   auto UnusedEdges = std::make_unique<std::vector<MSTEdge>>();
   auto UsedEdges = std::make_unique<std::vector<MSTEdge>>();
-  for (const auto &E : *Edges) {
+  for (const auto &E : LocalEdges) {
     auto &[U, V, W] = E;
     if (DS->isConnected(U, V))
       UnusedEdges->push_back(E);
@@ -175,15 +175,17 @@ std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve(int TestNum) {
   for (int Vertex = 2; Vertex <= VertexNum; Vertex++) {
     WorkSet->insert(Vertex);
   }
-  std::unique_ptr<std::vector<MSTEdge>> UsedEdges, UnusedEdges;
-  std::shared_ptr<DynamicGraph::Graph> DG, AnsDG;
+  std::shared_ptr<DynamicGraph::Graph> AnsDG;
   std::sort(Edges->begin(), Edges->end(),
             [](const MSTEdge &E1, const MSTEdge &E2) { return E1.W < E2.W; });
+#pragma omp parallel for
   for (int K = 0; K < TestNum; K++) {
     int RandNum = Edges->size() * K / TestNum;
-    std::random_shuffle(Edges->begin(), Edges->begin() + RandNum);
-    DG = std::make_shared<DynamicGraph::Graph>(VertexNum);
-    std::tie(UsedEdges, UnusedEdges) = spanningTree();
+    auto LocalEdges = *Edges;
+    std::random_shuffle(LocalEdges.begin(), LocalEdges.begin() + RandNum);
+    std::unique_ptr<std::vector<MSTEdge>> UsedEdges, UnusedEdges;
+    auto DG = std::make_shared<DynamicGraph::Graph>(VertexNum);
+    std::tie(UsedEdges, UnusedEdges) = spanningTree(LocalEdges);
     for (const auto &[U, V, _] : *UsedEdges) {
       DG->link(U, V);
     }

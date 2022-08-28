@@ -19,7 +19,6 @@ struct LinkCutTree {
   int ChildVertex[LCT_MAXN][2];
   int FlippedFlag[LCT_MAXN];
   int Stack[LCT_MAXN];
-  int StackTop;
   int Size[LCT_MAXN];
   int SizeValue[LCT_MAXN];
   int Tag[LCT_MAXN][2];
