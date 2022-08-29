@@ -1,17 +1,14 @@
-#ifndef LIST_H
-#define LIST_H
+#pragma once
+#include <memory>
 namespace DynamicGraph {
 struct List {
-  int *head;
-  int *pre;
-  int *next;
+  std::unique_ptr<int[]> Head;
+  std::unique_ptr<int[]> Precessor;
+  std::unique_ptr<int[]> Successor;
   void init(unsigned long);
-  void free();
   void link(int, int);
   void cut(int, int);
   bool empty(int);
   int first(int);
 };
 } // namespace DynamicGraph
-
-#endif // LIST_H

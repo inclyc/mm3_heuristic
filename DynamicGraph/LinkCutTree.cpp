@@ -1,4 +1,5 @@
 #include "DynamicGraph/LinkCutTree.h"
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -7,13 +8,19 @@ namespace DynamicGraph {
 #define l(u) ChildVertex[u][0]
 #define r(u) ChildVertex[u][1]
 
-void LinkCutTree::init(std::size_t VertexNum) {
+void LinkCutTree::init(int VertexNum) {
+  FatherVertex = std::make_unique<int[]>(VertexNum + 1);
+  FlippedFlag = std::make_unique<int[]>(VertexNum + 1);
+  Stack = std::make_unique<int[]>(VertexNum + 1);
+  Size = std::make_unique<int[]>(VertexNum + 1);
+  SizeValue = std::make_unique<int[]>(VertexNum + 1);
+
   for (std::size_t I = 0; I < 2; ++I) {
     ChildV[I].init(VertexNum);
-    for (std::size_t U = 1; U <= VertexNum; ++U)
+    for (int U = 1; U <= VertexNum; ++U)
       G[U][I].clear();
   }
-  for (std::size_t U = 0; U <= VertexNum; ++U) {
+  for (int U = 0; U <= VertexNum; ++U) {
     SizeValue[U] = 0;
     Stack[U] = 0;
     FatherVertex[U] = l(U) = r(U) = Tag[U][0] = Tag[U][1] = FlippedFlag[U] =
@@ -21,11 +28,6 @@ void LinkCutTree::init(std::size_t VertexNum) {
     Size[U] = 1;
   }
   Size[0] = 0;
-}
-
-void LinkCutTree::free() {
-  ChildV[0].free();
-  ChildV[1].free();
 }
 
 void LinkCutTree::linkv(int U, int V) {

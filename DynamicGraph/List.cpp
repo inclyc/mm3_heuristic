@@ -1,46 +1,41 @@
 #include "DynamicGraph/List.h"
 #include <cstddef>
+#include <memory>
 namespace DynamicGraph {
 void List::init(std::size_t VertexNum) {
-  head = new int[VertexNum + 1]();
-  pre = new int[VertexNum + 1]();
-  next = new int[VertexNum + 1]();
+  Head = std::make_unique<int[]>(VertexNum + 1);
+  Precessor = std::make_unique<int[]>(VertexNum + 1);
+  Successor = std::make_unique<int[]>(VertexNum + 1);
   for (unsigned int I = 0; I <= VertexNum; ++I) {
-    head[I] = pre[I] = next[I] = 0;
+    Head[I] = Precessor[I] = Successor[I] = 0;
   }
 }
 
-void List::free() {
-  delete[] head;
-  delete[] pre;
-  delete[] next;
-}
-
 void List::cut(int U, int V) {
-  if (next[V] == V) {
-    head[U] = 0;
+  if (Successor[V] == V) {
+    Head[U] = 0;
   } else {
-    if (head[U] == V) {
-      head[U] = next[V];
+    if (Head[U] == V) {
+      Head[U] = Successor[V];
     }
-    V[next][pre] = V[pre];
-    V[pre][next] = V[next];
+    Precessor[Successor[V]] = Precessor[V];
+    Successor[Precessor[V]] = Successor[V];
   }
 }
 
 void List::link(int U, int V) {
-  if (!head[U]) {
-    head[U] = pre[V] = next[V] = V;
+  if (!Head[U]) {
+    Head[U] = Precessor[V] = Successor[V] = V;
   } else {
-    int X = head[U];
-    int Y = pre[X];
-    pre[X] = next[Y] = V;
-    pre[V] = Y;
-    next[V] = X;
+    int X = Head[U];
+    int Y = Precessor[X];
+    Precessor[X] = Successor[Y] = V;
+    Precessor[V] = Y;
+    Successor[V] = X;
   }
 }
 
-bool List::empty(int U) { return head[U] == 0; }
+bool List::empty(int U) { return Head[U] == 0; }
 
-int List::first(int U) { return head[U]; }
+int List::first(int U) { return Head[U]; }
 } // namespace DynamicGraph

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstddef>
 #include <cstdio>
+#include <memory>
 #include <vector>
 
 #define l(u) ch[u][0]
@@ -86,14 +87,13 @@ void Graph::cut(int U, int V) {
   } else
     deleteGraph(Level, U, V);
 }
-Graph::~Graph() {
-  for (int I = 0; I < 20; ++I)
-    LCT[I].free();
-}
 
 Graph::Graph(int VertexNum) {
-  for (std::size_t I = 0; I < 20; ++I)
-    LCT[I].init(static_cast<std::size_t>(VertexNum));
+  LCT = std::make_unique<LinkCutTree[]>(20);
+  for (std::size_t I = 0; I < 20; ++I) {
+    LCT[I].init(VertexNum);
+  }
+
   LV.clear();
   Blocks = VertexNum;
   N = VertexNum;
