@@ -7,6 +7,7 @@
 #include <fmt/core.h>
 #include <functional>
 #include <memory>
+#include <random>
 #include <sys/types.h>
 #include <utility>
 
@@ -178,11 +179,13 @@ std::pair<float, std::unique_ptr<std::set<int>>> MSTGraph::solve(int TestNum) {
   std::shared_ptr<DynamicGraph::Graph> AnsDG;
   std::sort(Edges->begin(), Edges->end(),
             [](const MSTEdge &E1, const MSTEdge &E2) { return E1.W < E2.W; });
+  std::random_device RandomDevice;
+  std::mt19937 RG(RandomDevice());
 #pragma omp parallel for
   for (int K = 0; K < TestNum; K++) {
     int RandNum = Edges->size() * K / TestNum;
     auto LocalEdges = *Edges;
-    std::random_shuffle(LocalEdges.begin(), LocalEdges.begin() + RandNum);
+    std::shuffle(LocalEdges.begin(), LocalEdges.begin() + RandNum, RG);
     std::unique_ptr<std::vector<MSTEdge>> UsedEdges, UnusedEdges;
     auto DG = std::make_shared<DynamicGraph::Graph>(VertexNum);
     std::tie(UsedEdges, UnusedEdges) = spanningTree(LocalEdges);
