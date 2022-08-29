@@ -8,7 +8,6 @@ int main(int argc, char *argv[]) {
   if (argc > 1) {
     TestNum = std::atoi(argv[1]);
   }
-  fmt::print("Random rounds: {}\n", TestNum);
   for (int TestCase = 15; TestCase <= 100; TestCase++) {
     auto Average = [&](int Case,
                        int EdgeNum) -> std::tuple<float, float, float> {
