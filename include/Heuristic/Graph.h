@@ -69,18 +69,26 @@ std::unique_ptr<T> randomBiGraph(int VertexNum, int EdgeNum) {
     // keeps to next iteration
     Ans->addBiEdge(randRange(1, I), I, randFloat());
   }
+  std::set<std::pair<int, int>> EdgeCovered;
 
   // now all vertexes are connected (as a tree)
   // generates [VertexNum, EdgeNum) edges here
   for (int I = VertexNum; I <= EdgeNum; I++) {
     // U, V belongs to [1, VertexNum + 1)
     int U = 0, V = 0;
-    while (U == V) {
-      // no self loops
+    for (;;) {
       U = randRange(1, VertexNum + 1);
       V = randRange(1, VertexNum + 1);
+      if (U == V)
+        continue; // no self loops
+      auto E = std::make_pair(U, V);
+      if (EdgeCovered.contains(E))
+        continue; // no parallel edges
+
+      EdgeCovered.insert(E); // Add this edge to covered set
+      Ans->addBiEdge(U, V, randFloat());
+      break; // OK, fine
     }
-    Ans->addBiEdge(U, V, randFloat());
   }
 
   return Ans;
